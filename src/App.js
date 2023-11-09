@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Button, Typography, Container, AppBar, Toolbar } from '@mui/material';
+import './App.css'; // You can create this file to add custom styles if needed
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ErrorBoundary from './ErrorBoundary';
 
 function App() {
+  const defaultTheme = createTheme();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ErrorBoundary>
+      <ThemeProvider theme={defaultTheme}>
+        <Container>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6">Material-UI React App</Typography>
+            </Toolbar>
+          </AppBar>
+          <div>
+            <Typography variant="h4">Welcome to Material-UI!</Typography>
+            <Button variant="contained" color="primary">
+              Click me
+            </Button>
+          </div>
+        </Container>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
