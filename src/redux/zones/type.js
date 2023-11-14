@@ -1,0 +1,8 @@
+export const ActionTypes = {
+    CREATE_ZONE: 'CREATE_ZONE',
+    UPDATE_ZONE: 'UPDATE_ZONE',
+    DELETE_ZONE: 'DELETE_ZONE',
+    FETCH_ZONE: 'FETCH_ZONE',
+    FETCH_ZONES: 'FETCH_ZONES',
+    ERROR: 'ERROR',
+}
