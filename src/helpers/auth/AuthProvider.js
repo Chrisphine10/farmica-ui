@@ -9,10 +9,11 @@ export function AuthProvider({ children }) {
     const signin = async (username, password, rememberMe) => {
         try {
             var userData = await simpleLogin(username, password, rememberMe);
+            console.log("userData", userData);
             if (userData === null) {
                 return false;
             } else {
-                setUser(userData.user);
+                setUser(userData.id_token);
                 console.log("userData", userData);
                 return true;
             }

@@ -11,7 +11,6 @@ import Backdrop from '@mui/material/Backdrop';
 import Snackbar from '@mui/material/Snackbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import { counties } from "kenya";
-import { addMarketFacilitator } from '../../redux/accounts/actions/accountsAction';
 import { register } from '../../redux/auth/actions/authAction';
 import { format } from 'date-fns';
 
@@ -42,18 +41,6 @@ export default function SignUp() {
     const [openError, setOpenError] = useState("");
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
-    const [newUser, setNewUser] = useState({
-        fname: '',
-        lname: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        phone: '',
-        gender: '',
-        numberOfZones: 0,
-        county: '',
-        ageRange: '',
-    });
 
     const [userRegistrationData, setUserRegistrationData] = useState({
         login: '',
@@ -85,56 +72,13 @@ export default function SignUp() {
             }
         });
 
-    const [userMarketFacilitatorDataNew, setUserMarketFacilitatorDataNew] = useState({});
 
 
 
-    const handleFormData = (name, event) => {
-        setNewUser({ ...newUser, [name]: event.target.value });
 
-        setUserRegistrationData({
-            ...userRegistrationData,
-            login: newUser.phone,
-            firstName: newUser.fname,
-            lastName: newUser.lname,
-            email: newUser.email,
-            password: newUser.password,
-            createdDate: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-        });
 
-        setUserMarketFacilitatorData({
-            ...userMarketFacilitatorData,
-            county: newUser.county,
-            gender: newUser.gender,
-            ageRange: newUser.ageRange,
-            numberOfZones: parseFloat(newUser.numberOfZones),
-        });
-    };
 
-    useEffect(() => {
-        console.log("User Details: " + userDetails);
-        if (userDetails !== null && userDetails.id !== undefined && userDetails !== "") {
-            setUserMarketFacilitatorDataNew({
-                ...userMarketFacilitatorData,
-                createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
-                updateAt: format(new Date(), "yyyy-MM-dd"),
-                phoneNumber: '+254' + newUser.phone,
-                user: {
-                    "id": userDetails.id,
-                    "login": userDetails.login
-                }
-            });
-        } else {
-            setLoading(false);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userDetails]);
 
-    useEffect(() => {
-        if (userMarketFacilitatorDataNew !== null && userMarketFacilitatorDataNew.createdAt !== undefined && userMarketFacilitatorDataNew !== {}) {
-            dispatch(addMarketFacilitator(userMarketFacilitatorDataNew));
-        }
-    }, [dispatch, userMarketFacilitatorDataNew]);
 
     useEffect(() => {
         console.log("registrationError: " + registrationError);
@@ -176,7 +120,7 @@ export default function SignUp() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const error = await validateData(newUser);
+        const error = await validateData();
         setOpenError(error);
         console.log(error);
         if (error !== null) {
@@ -186,7 +130,6 @@ export default function SignUp() {
             setLoading(true);
             // set user registration data
             dispatch(register(userRegistrationData));
-            console.log(newUser);
         }
     };
 
@@ -279,7 +222,6 @@ export default function SignUp() {
                         name="fname"
                         autoComplete="first-name"
                         autoFocus
-                        onChange={(event) => handleFormData('fname', event)}
                     />
                     <TextField
                         margin="normal"
@@ -290,7 +232,6 @@ export default function SignUp() {
                         name="lname"
                         autoComplete="last-name"
                         autoFocus
-                        onChange={(event) => handleFormData('lname', event)}
                     />
                     <TextField
                         label="Phone Number"
@@ -307,7 +248,6 @@ export default function SignUp() {
                                 </InputAdornment>
                             ),
                         }}
-                        onChange={(event) => handleFormData('phone', event)}
                     />
                     <TextField
                         margin="normal"
@@ -317,7 +257,6 @@ export default function SignUp() {
                         name="email"
                         autoComplete="email"
                         autoFocus
-                        onChange={(event) => handleFormData('email', event)}
                     />
                     <FormControl fullWidth margin="normal" required>
                         <InputLabel id="gender">Gender</InputLabel>
@@ -325,7 +264,6 @@ export default function SignUp() {
                             name='gender'
                             required
                             label="Gender"
-                            onChange={(event) => handleFormData('gender', event)}
                         >
                             {Object.values(Gender).map((gender) => (
                                 <MenuItem key={gender} value={gender}>
@@ -340,7 +278,6 @@ export default function SignUp() {
                             label="Age Range"
                             name='ageRange'
                             required
-                            onChange={(event) => handleFormData('ageRange', event)}
                         >
                             {Object.values(AgeRange).map((ageRange) => (
                                 <MenuItem key={ageRange.at} value={ageRange}>
@@ -360,7 +297,6 @@ export default function SignUp() {
                             labelId="county"
                             name='county'
                             label="County"
-                            onChange={(event) => handleFormData('county', event)}
                         >
                             {counties.map((county) => (
                                 county.id === null ? null : <MenuItem key={county.name} value={county.name}>
@@ -378,7 +314,6 @@ export default function SignUp() {
                         type="number"
                         id="numberOfZones"
                         autoComplete="current-password"
-                        onChange={(event) => handleFormData('numberOfZones', event)}
                     />
                     <TextField
                         margin="normal"
@@ -389,7 +324,6 @@ export default function SignUp() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        onChange={(event) => handleFormData('password', event)}
                     />
                     <TextField
                         margin="normal"
@@ -400,7 +334,6 @@ export default function SignUp() {
                         type="password"
                         id="confirmPassword"
                         autoComplete="current-password"
-                        onChange={(event) => handleFormData('confirmPassword', event)}
                     />
                     <Button
                         type="submit"

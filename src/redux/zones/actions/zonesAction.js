@@ -3,13 +3,14 @@ import { ActionTypes } from "../type";
 
 export const createZone = (zone) => async (dispatch) => {
     try {
-        const response = await baseAPI.post("/zones", zone);
+        const response = await baseAPI.post("/packing-zone-details", zone);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.CREATE_ZONE,
                 payload: response.data,
             });
-        } else {
+        }
+        else {
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,
@@ -25,7 +26,7 @@ export const createZone = (zone) => async (dispatch) => {
 
 export const updateZone = (zone) => async (dispatch) => {
     try {
-        const response = await baseAPI.put(`/zones/${zone.id}`, zone);
+        const response = await baseAPI.put(`/packing-zone-details/${zone.id}`, zone);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.UPDATE_ZONE,
@@ -47,7 +48,7 @@ export const updateZone = (zone) => async (dispatch) => {
 
 export const deleteZone = (zone) => async (dispatch) => {
     try {
-        const response = await baseAPI.delete(`/zones/${zone.id}`);
+        const response = await baseAPI.delete(`/packing-zone-details/${zone.id}`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.DELETE_ZONE,
@@ -69,7 +70,7 @@ export const deleteZone = (zone) => async (dispatch) => {
 
 export const fetchZone = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/zones/${id}`);
+        const response = await baseAPI.get(`/packing-zone-details/${id}`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_ZONE,
@@ -91,7 +92,8 @@ export const fetchZone = (id) => async (dispatch) => {
 
 export const fetchZones = () => async (dispatch) => {
     try {
-        const response = await baseAPI.get("/zones");
+        const response = await baseAPI.get("/packing-zone-details");
+        console.log(response);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_ZONES,
@@ -110,3 +112,8 @@ export const fetchZones = () => async (dispatch) => {
         });
     }
 }
+
+export const setSelectedZone = (item) => ({
+    type: 'FETCH_ZONE',
+    payload: item,
+});

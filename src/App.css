@@ -32,7 +32,23 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* CSS */
+.content-container {
+  margin-left: 70px;
+  /* Adjust this margin to account for the NavBar width */
+  padding: 20px;
+  transition: margin 0.3s;
+  /* Add a smooth transition effect for better user experience */
+
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    margin-left: 0px !important;
+    /* Remove the margin for smaller screens */
   }
 }

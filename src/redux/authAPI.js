@@ -1,5 +1,5 @@
 import axios from "axios";
-import { constants } from "../config/constants";
+import { constants } from "../configs/constants";
 
 export default axios.create({
     baseURL: constants.API_AUTH_URL,

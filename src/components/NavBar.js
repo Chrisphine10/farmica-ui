@@ -1,5 +1,5 @@
 // components/HomePage.js
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -18,17 +18,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import BusinessIcon from '@mui/icons-material/Business';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useAuth } from '../helpers/auth/AuthProvider';
 import { Link } from 'react-router-dom';
 import { useMenu } from '../helpers/menu/MenuProvider';
-import Badge from '@mui/material/Badge';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { ColorLens, LocationCity, LocationOn, Recycling } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -123,10 +119,14 @@ const NavBar = () => {
 
   const menuItems = [
     { icon: <DashboardIcon />, text: 'Dashboard', to: '/' },
-    { icon: <LocalShippingIcon />, text: 'LMV Orders', to: '/lmv-orders' },
-    { icon: <AssignmentIcon />, text: 'Aggregated Orders', to: '/aggregated-orders' },
-    { icon: <LocalMallIcon />, text: 'LMVs', to: '/lmvs' },
-    { icon: <BusinessIcon />, text: 'FPOs', to: '/fpos' },
+    // add item for zones
+    { icon: <LocationCity />, text: 'Packing Zones', to: '/zones-list' },
+    // add item for reworks
+    { icon: <Recycling />, text: 'Reworks', to: '/rework-list' },
+    // add item for regions
+    { icon: <LocationOn />, text: 'Regions', to: '/regions-list' },
+    // add item for styles
+    { icon: <ColorLens />, text: 'Styles', to: '/styles-list' },
   ];
 
   const iconStyles = {

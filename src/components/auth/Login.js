@@ -15,8 +15,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../helpers/auth/AuthProvider";
-import { fetchMarketFacilitatorByLogin } from "../../redux/accounts/actions/accountsAction";
-import InputAdornment from "@mui/material/InputAdornment";
 
 function Copyright(props) {
   return (
@@ -47,15 +45,9 @@ export default function Login() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [open, setOpen] = useState(false);
-  //const marketFacilitator = useSelector((state) => state.accounts.marketFacilitator);
 
-  const dispatch = useDispatch();
+  const redirectPath = location.state?.path || "/";
 
-  const redirectPath = location.state?.path || "/home";
-
-  const getMarketFacilitator = async (username) => {
-    await dispatch(fetchMarketFacilitatorByLogin(username));
-  };
 
   const handleSubmit = async (event) => {
     setLoading(true);
@@ -64,10 +56,9 @@ export default function Login() {
     var status = await auth.signin(
       data.get("login"),
       data.get("password"),
-      data.get("rememberMe")
+      data.get("rememberMe") ? true : false
     );
     if (status) {
-      getMarketFacilitator(data.get("login"));
       setOpenSuccess(true);
       navigate(redirectPath);
     } else {
@@ -121,23 +112,13 @@ export default function Login() {
           sx={{ mt: 1 }}
         >
           <TextField
-            label="Phone Number"
-            variant="outlined"
+            label="Email Address"
             name="login"
-            id="login"
-            required
-            type="number"
-            fullWidth
             margin="normal"
+            required
+            fullWidth
             autoFocus
-            autoComplete="tel"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  +254
-                </InputAdornment>
-              ),
-            }}
+            autoComplete="email"
           />
           <TextField
             margin="normal"
@@ -150,8 +131,9 @@ export default function Login() {
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value='true' color="primary" />}
             label="Remember me"
+            name="rememberMe"
           />
           <Button
             type="submit"

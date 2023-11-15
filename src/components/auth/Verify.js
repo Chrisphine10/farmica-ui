@@ -16,15 +16,13 @@ import Backdrop from '@mui/material/Backdrop';
 import Snackbar from '@mui/material/Snackbar';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../helpers/auth/AuthProvider';
-import { fetchMarketFacilitatorByLogin } from '../../redux/accounts/actions/accountsAction';
-import { useDispatch } from "react-redux";
 
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mvuna.co.ke/">
-                mVuna System
+                Farmica System
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -43,17 +41,12 @@ export default function Verify() {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const [open, setOpen] = useState(false);
-    //const marketFacilitator = useSelector((state) => state.accounts.marketFacilitator);
 
-    const dispatch = useDispatch();
 
     const redirectPath = location.state?.path || '/home';
 
 
 
-    const getMarketFacilitator = async (username) => {
-        await dispatch(fetchMarketFacilitatorByLogin(username));
-    };
 
 
     const handleSubmit = async (event) => {
@@ -62,7 +55,6 @@ export default function Verify() {
         const data = new FormData(event.currentTarget);
         var status = await auth.signin(data.get('login'), data.get('password'), data.get('rememberMe'));
         if (status) {
-            getMarketFacilitator(data.get('login'));
             setOpenSuccess(true);
             navigate(redirectPath);
         } else {

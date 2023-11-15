@@ -9,7 +9,6 @@ export const ActionTypes = {
     CHANGE_PASSWORD: 'CHANGE_PASSWORD',
     ACTIVATE_USER: 'ACTIVATE_USER',
 
-
     // status actions
     LOGIN_SUCCESS: 'LOGIN_SUCCESS',
     LOGIN_FAIL: 'LOGIN_FAIL',

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { constants } from "../config/constants";
+import { constants } from "../configs/constants";
 
 axios.defaults.baseURL = constants.API_URL_V1;
 
