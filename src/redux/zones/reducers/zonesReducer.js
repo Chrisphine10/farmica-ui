@@ -22,6 +22,12 @@ const zonesReducer = (state = initialState, action) => {
             return { ...state, zones: action.payload };
         case ActionTypes.ERROR:
             return { ...state, error: action.payload };
+        case ActionTypes.CLEAN_UP:
+            return { ...state, zones: [], zone: {}, error: null }
+        case ActionTypes.FETCH_ZONES_BY_STYLE:
+            return { ...state, zones: action.payload };
+        case ActionTypes.FETCH_ZONES_BY_LOT:
+            return { ...state, zones: action.payload };
         default:
             return state;
     }

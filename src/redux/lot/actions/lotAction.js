@@ -112,12 +112,12 @@ export const deleteLot = (id) => async (dispatch) => {
     }
 }
 
-export const fetchLotsByStyle = (id) => async (dispatch) => {
+export const fetchLotsByBatch = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/styles/${id}/lots`);
+        const response = await baseAPI.get(`/batch-details/${id}/lot-details`);
         if (response.status === 200) {
             dispatch({
-                type: ActionTypes.FETCH_LOTS_BY_STYLE,
+                type: ActionTypes.FETCH_LOTS_BY_BATCH,
                 payload: response.data,
             });
         } else {
@@ -133,3 +133,9 @@ export const fetchLotsByStyle = (id) => async (dispatch) => {
         });
     }
 }
+
+export const cleanUp = () => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.CLEAN_UP,
+    });
+};

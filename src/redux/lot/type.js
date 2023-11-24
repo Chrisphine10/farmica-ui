@@ -5,4 +5,6 @@ export const ActionTypes = {
     FETCH_LOT: 'FETCH_LOT',
     FETCH_LOTS: 'FETCH_LOTS',
     FETCH_LOTS_BY_BATCH: 'FETCH_LOTS_BY_BATCH',
+    ERROR: 'ERROR',
+    CLEAN_UP: 'CLEAN_UP',
 }

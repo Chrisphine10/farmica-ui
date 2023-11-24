@@ -4,7 +4,7 @@ import { ActionTypes } from "../type";
 // Define your actions creators that will dispatch actions to your reducers
 export const fetchBatches = () => async (dispatch) => {
     try {
-        const response = await baseAPI.get("/batches");
+        const response = await baseAPI.get("/batch-details");
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_BATCHES,
@@ -26,7 +26,7 @@ export const fetchBatches = () => async (dispatch) => {
 
 export const fetchBatch = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/batches/${id}`);
+        const response = await baseAPI.get(`/batch-details/${id}`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_BATCH,
@@ -48,7 +48,7 @@ export const fetchBatch = (id) => async (dispatch) => {
 
 export const createBatch = (data) => async (dispatch) => {
     try {
-        const response = await baseAPI.post("/batches", data);
+        const response = await baseAPI.post("/batch-details", data);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.CREATE_BATCH,
@@ -70,7 +70,7 @@ export const createBatch = (data) => async (dispatch) => {
 
 export const updateBatch = (id, data) => async (dispatch) => {
     try {
-        const response = await baseAPI.put(`/batches/${id}`, data);
+        const response = await baseAPI.put(`/batch-details/${id}`, data);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.UPDATE_BATCH,
@@ -92,7 +92,7 @@ export const updateBatch = (id, data) => async (dispatch) => {
 
 export const deleteBatch = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.delete(`/batches/${id}`);
+        const response = await baseAPI.delete(`/batch-details/${id}`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.DELETE_BATCH,
@@ -114,7 +114,7 @@ export const deleteBatch = (id) => async (dispatch) => {
 
 export const fetchBatchesByRegion = (regionId) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/batches/region/${regionId}`);
+        const response = await baseAPI.get(`/region/${regionId}/batch-details`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_BATCHES_BY_REGION,
@@ -133,3 +133,10 @@ export const fetchBatchesByRegion = (regionId) => async (dispatch) => {
         });
     }
 };
+
+//clean up
+export const cleanup = () => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.CLEANUP,
+    });
+}

@@ -113,6 +113,50 @@ export const fetchZones = () => async (dispatch) => {
     }
 }
 
+export const fetchZonesByStyle = (style) => async (dispatch) => {
+    try {
+        const response = await baseAPI.get(`/style-details/${style}/parking-zone-details`);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.FETCH_ZONES_BY_STYLE,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
+export const fetchZonesByLot = (lot) => async (dispatch) => {
+    try {
+        const response = await baseAPI.get(`/lot-details/${lot}/parking-zone-details`);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.FETCH_ZONES_BY_LOT,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
 export const setSelectedZone = (item) => ({
     type: 'FETCH_ZONE',
     payload: item,

@@ -112,9 +112,9 @@ export const deleteRework = (id) => async (dispatch) => {
     }
 };
 
-export const fetchReworksByLot = (lot) => async (dispatch) => {
+export const fetchReworksByLot = (lotId) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/reworks/lot/${lot}`);
+        const response = await baseAPI.get(`/lot-details/${lotId}/rework-details`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_REWORKS_BY_LOT,
@@ -133,3 +133,16 @@ export const fetchReworksByLot = (lot) => async (dispatch) => {
         });
     }
 };
+
+export const cleanUp = () => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.CLEAN_UP,
+    });
+};
+
+export const setSelectedRework = (rework) => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.SET_SELECTED_REWORK,
+        payload: rework,
+    });
+}

@@ -26,7 +26,7 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mvuna.co.ke/">
-        mVuna System
+        Farmica System
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

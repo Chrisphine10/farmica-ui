@@ -6,4 +6,5 @@ export const ActionTypes = {
     FETCH_REWORKS: 'FETCH_REWORKS',
     FETCH_REWORKS_BY_LOT: 'FETCH_REWORKS_BY_LOT',
     ERROR: 'ERROR',
+    CLEAN_UP: 'CLEAN_UP',
 }

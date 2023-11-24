@@ -20,10 +20,12 @@ const lotReducer = (state = initialState, action) => {
             return { ...state, lot: action.payload };
         case ActionTypes.FETCH_LOTS:
             return { ...state, lots: action.payload };
-        case ActionTypes.FETCH_LOTS_BY_STYLE:
+        case ActionTypes.FETCH_LOTS_BY_BATCH:
             return { ...state, lots: action.payload };
         case ActionTypes.ERROR:
             return { ...state, error: action.payload };
+        case ActionTypes.CLEAN_UP:
+            return { ...state, error: null, lot: {}, lots: [] };
         default:
             return state;
     }

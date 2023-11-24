@@ -24,6 +24,8 @@ const reworkReducer = (state = initialState, action) => {
             return { ...state, reworks: action.payload };
         case ActionTypes.ERROR:
             return { ...state, error: action.payload };
+        case ActionTypes.CLEAN_UP:
+            return { ...state, rework: {}, error: null, reworks: [] };
         default:
             return state;
     }

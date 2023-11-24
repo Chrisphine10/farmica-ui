@@ -1,5 +1,5 @@
 export const constants = {
-    API_URL_V1: " https://cd3d-154-72-41-10.ngrok-free.app/api/",
-    API_URL_V2: " https://cd3d-154-72-41-10.ngrok-free.app/api/",
-    API_AUTH_URL: " https://cd3d-154-72-41-10.ngrok-free.app/api/",
+    API_URL_V1: "https://835d-102-215-58-170.ngrok-free.app/api/",
+    API_URL_V2: "https://835d-102-215-58-170.ngrok-free.app/api/v1",
+    API_AUTH_URL: "https://835d-102-215-58-170.ngrok-free.app/api/",
 };

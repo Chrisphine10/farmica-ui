@@ -24,6 +24,8 @@ const batchReducer = (state = initialState, action) => {
             return { ...state, batches: action.payload };
         case ActionTypes.ERROR:
             return { ...state, error: action.payload };
+        case ActionTypes.CLEAN_UP:
+            return { ...state, error: null, batch: {}, batches: [] };
         default:
             return state;
     }
