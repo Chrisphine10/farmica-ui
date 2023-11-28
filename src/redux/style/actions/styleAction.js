@@ -112,3 +112,9 @@ export const deleteStyle = (id) => async (dispatch) => {
     }
 };
 
+export const selectedStyle = (style) => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.FETCH_STYLE,
+        payload: style,
+    });
+}

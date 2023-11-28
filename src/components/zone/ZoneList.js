@@ -5,14 +5,14 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button, ButtonGroup, Tabs, Tab, CircularProgress } from '@mui/material';
 import { fetchZones, setSelectedZone } from '../../redux/zones/actions/zonesAction';
 import { useNavigate } from 'react-router-dom';
-
-
+import { fetchStyles } from '../../redux/style/actions/styleAction';
 
 const ZoneList = () => {
     const zonesList = useSelector(state => state.zones.zones);
     const [loading, setLoading] = useState(true);
     const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedTab') || 'All');
     const [filteredRows, setFilteredRows] = useState([]);
+    const styles = useSelector((state) => state.style.styles);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     let key = 0;
@@ -21,27 +21,37 @@ const ZoneList = () => {
     const columns = [
         { field: 'id', headerName: 'ID', flex: 0.5 },
         { field: 'packageDate', headerName: 'Package Date', flex: 1 },
-        { field: 'weightReceived', headerName: 'Weight Received', flex: 1 },
-        { field: 'weightBalance', headerName: 'Weight Balance', flex: 1 },
+        // { field: 'weightReceived', headerName: 'Weight Received', flex: 1 },
+        // { field: 'weightBalance', headerName: 'Weight Balance', flex: 1 },
+        { field: 'uicode', headerName: 'Uicode', flex: 1 },
         { field: 'numberOfCTNs', headerName: 'Number of CTNs', flex: 1 },
         { field: 'startCTNNumber', headerName: 'Start CTN Number', flex: 1 },
         { field: 'endCTNNumber', headerName: 'End CTN Number', flex: 1 },
-        { field: 'status', headerName: 'Status', flex: 1 },
-        { field: 'lotDetails', headerName: 'Lot Details', flex: 1 },
+        { field: 'styleName', headerName: 'Style Details', flex: 1 },
+        { field: 'lotNumber', headerName: 'Lot Details', flex: 1 },
+        { field: 'batchNumber', headerName: 'Batch Details', flex: 1 },
+        { field: 'regionName', headerName: 'Region', flex: 1 },
         {
             field: 'action',
             headerName: 'Actions',
             flex: 1.3,
             renderCell: (params) => (
                 <>
-                    <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                        <Button color='primary' onClick={
+                    <ButtonGroup variant="outlined" aria-label="outlined primary button group">
+                        <Button color='success' onClick={
                             () => {
                                 dispatch(setSelectedZone(zonesList.find((row) => row.id === params.id)));
                                 navigate('/view-zone');
                             }
                         }>View</Button>
-                        <Button color='success' href={`/edit-zone/${params.id}`}>Edit</Button>
+                        <Button color='warning'
+                            onClick={
+                                () => {
+                                    dispatch(setSelectedZone(zonesList.find((row) => row.id === params.id)));
+                                    navigate('/add-zone/' + params.id);
+                                }
+                            }
+                        >Edit</Button>
                     </ButtonGroup>
                 </>
             ),
@@ -51,11 +61,12 @@ const ZoneList = () => {
     useEffect(() => {
         setLoading(true);
         dispatch(fetchZones());
+        dispatch(fetchStyles());
     }, [dispatch]);
 
     useEffect(() => {
         if (zonesList.length > 0) {
-            setFilteredRows(selectedTab === 'All' ? zonesList : zonesList.filter((row) => row.status === selectedTab));
+            setFilteredRows(selectedTab === 'All' ? zonesList : zonesList.filter((row) => row.styleName === selectedTab));
             localStorage.setItem('selectedTab', selectedTab);
             setLoading(false);
         }
@@ -67,7 +78,7 @@ const ZoneList = () => {
             <div style={{ width: '100%' }}>
                 <h1>Packing Zones Items </h1>
                 <div style={{ marginBottom: 20 }}>
-                    <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                    <ButtonGroup variant="outlined" aria-label="outlined primary button group">
                         <Button color='success' href="/add-zone">Add Item </Button>
                     </ButtonGroup>
                 </div>
@@ -87,11 +98,8 @@ const ZoneList = () => {
                         }
                         key={key}
                     >
-                        <Tab label="All" value="All" />
-                        <Tab label="Packing" value="PACKING" />
-                        <Tab label="Warehouse" value="WAREHOUSE" />
-                        <Tab label="Rework" value="REWORK" />
-                        <Tab label="Sales" value="SALES" />
+                        <Tab label="All Styles" value="All" />
+                        {styles && styles.map((style) => <Tab label={style.name} value={style.name} key={key++} />)}
                     </Tabs>
                 </div>,
 

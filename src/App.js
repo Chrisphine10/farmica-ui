@@ -14,15 +14,23 @@ import SignUp from "./components/auth/SignUp";
 import Verify from "./components/auth/Verify";
 import Reset from "./components/auth/Reset";
 import Dashboard from "./components/dashboard/Dashboard";
-import AddRegion from "./components/region/AddRegion";
-import RegionsList from "./components/region/RegionsList";
+import BatchList from "./components/batch/BatchList";
+import BatchView from './components/batch/BatchView';
 import AddRework from "./components/rework/AddRework";
 import ReworkList from "./components/rework/ReworkList";
-import AddStyle from "./components/style/AddStyle";
+import ReworkView from './components/rework/ReworkView';
 import StylesList from "./components/style/StylesList";
+import StylesView from './components/style/StylesView';
 import AddZone from "./components/zone/AddZone";
 import ZoneList from "./components/zone/ZoneList";
 import ZoneView from './components/zone/ZoneView';
+import LotList from './components/lot/LotList';
+import LotsView from './components/lot/LotView';
+import RegionList from './components/region/RegionList';
+import WarehouseList from './components/warehouse/WarehouseList';
+import WarehouseView from './components/warehouse/WarehouseView';
+import SalesList from './components/sales/SalesList';
+import SalesView from './components/sales/SalesView';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -45,15 +53,24 @@ function App() {
                       <Route path="/verify" element={<Verify />} />
                       <Route path="/reset" element={<Reset />} />
                       <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-                      <Route path="/add-region" element={<RequireAuth><AddRegion /></RequireAuth>} />
-                      <Route path="/regions-list" element={<RequireAuth><RegionsList /></RequireAuth>} />
+                      <Route path="/batch-list" element={<RequireAuth><BatchList /></RequireAuth>} />
                       <Route path="/add-rework" element={<RequireAuth><AddRework /></RequireAuth>} />
                       <Route path="/rework-list" element={<RequireAuth><ReworkList /></RequireAuth>} />
-                      <Route path="/add-style" element={<RequireAuth><AddStyle /></RequireAuth>} />
+                      <Route path="/view-rework" element={<RequireAuth><ReworkView /></RequireAuth>} />
                       <Route path="/styles-list" element={<RequireAuth><StylesList /></RequireAuth>} />
                       <Route path="/add-zone" element={<RequireAuth><AddZone /></RequireAuth>} />
+                      <Route path="/add-zone/:id" element={<RequireAuth><AddZone /></RequireAuth>} />
                       <Route path="/zones-list" element={<RequireAuth><ZoneList /></RequireAuth>} />
                       <Route path="/view-zone" element={<RequireAuth><ZoneView /></RequireAuth>} />
+                      <Route path="/lots-list" element={<RequireAuth><LotList /></RequireAuth>} />
+                      <Route path="/view-lot" element={<RequireAuth><LotsView /></RequireAuth>} />
+                      <Route path="/regions-list" element={<RequireAuth><RegionList /></RequireAuth>} />
+                      <Route path="/warehouse-list" element={<RequireAuth><WarehouseList /></RequireAuth>} />
+                      <Route path="/view-warehouse" element={<RequireAuth><WarehouseView /></RequireAuth>} />
+                      <Route path="/sales-list" element={<RequireAuth><SalesList /></RequireAuth>} />
+                      <Route path="/view-sales" element={<RequireAuth><SalesView /></RequireAuth>} />
+                      <Route path="/view-style" element={<RequireAuth><StylesView /></RequireAuth>} />
+                      <Route path="/view-batch" element={<RequireAuth><BatchView /></RequireAuth>} />
                     </Routes>
                   </Router>
                 </div>

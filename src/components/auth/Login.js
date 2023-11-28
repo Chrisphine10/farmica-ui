@@ -12,7 +12,6 @@ import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../helpers/auth/AuthProvider";
 
@@ -101,7 +100,7 @@ export default function Login() {
       >
         <img
           style={{ width: "300px", marginBottom: "20px" }}
-          src="/mVuna.png"
+          src="/logo.jpg"
           alt="logo"
         />
         <h1>Sign in</h1>
@@ -115,6 +114,7 @@ export default function Login() {
             label="Email Address"
             name="login"
             margin="normal"
+            type="email"
             required
             fullWidth
             autoFocus

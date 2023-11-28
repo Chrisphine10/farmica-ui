@@ -5,6 +5,7 @@ import { ActionTypes } from "../type";
 export const fetchRegions = () => async (dispatch) => {
     try {
         const response = await baseAPI.get("/regions");
+
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_REGIONS,
@@ -48,6 +49,7 @@ export const fetchRegion = (id) => async (dispatch) => {
 
 export const createRegion = (data) => async (dispatch) => {
     try {
+        console.log(data);
         const response = await baseAPI.post("/regions", data);
         if (response.status === 200) {
             dispatch({
@@ -111,4 +113,12 @@ export const deleteRegion = (id) => async (dispatch) => {
         });
     }
 }
+
+export const setSelectedRegion = (region) => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.FETCH_REGION,
+        payload: region,
+    });
+}
+
 

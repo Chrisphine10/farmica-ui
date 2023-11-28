@@ -1,6 +1,7 @@
 // import baseAPI from '../../baseAPI';
 import authAPI from '../../authAPI';
 import { ActionTypes } from "../type";
+import { toast } from 'react-toastify';
 
 export const login = (login, password, rememberMe) => {
     return async function (dispatch, getState) {
@@ -12,6 +13,7 @@ export const login = (login, password, rememberMe) => {
             });
 
             if (response.status === 200) {
+                toast.success("Login successful");
                 localStorage.setItem('token', response.data.id_token);
                 localStorage.setItem('login', login);
                 localStorage.setItem('userId', response.data.user.id);
@@ -21,6 +23,7 @@ export const login = (login, password, rememberMe) => {
                     payload: response.data.user
                 });
             } else {
+                toast.error("Login failed");
                 localStorage.clear();
                 dispatch({
                     type: ActionTypes.LOGIN_FAIL,
@@ -28,6 +31,7 @@ export const login = (login, password, rememberMe) => {
                 });
             }
         } catch (error) {
+            toast.error("Login failed");
             localStorage.clear();
             console.log(error);
             dispatch({
@@ -47,14 +51,19 @@ export const simpleLogin = async (login, password, rememberMe) => {
             "username": login
         });
         if (response.status === 200) {
+            toast.success("Login successful");
             localStorage.setItem('token', response.data.id_token);
             localStorage.setItem('login', login);
+            localStorage.setItem('userId', response.data.user.id);
+            localStorage.setItem('userEmail', response.data.user.email);
             return response.data;
         } else {
+            toast.error("Login failed");
             localStorage.clear();
             return null;
         }
     } catch (error) {
+        toast.error("Login failed");
         localStorage.clear();
         console.log(error);
         return null;
@@ -63,19 +72,23 @@ export const simpleLogin = async (login, password, rememberMe) => {
 
 export const register = (data) => async (dispatch, getState) => {
     try {
+        console.log(data);
         const response = await authAPI.post("register", data);
         if (response.status === 201) {
+            toast.success("Registration successful");
             dispatch({
                 type: ActionTypes.REGISTER_SUCCESS,
                 payload: response.data
             });
         } else {
+            toast.error("Registration failed");
             dispatch({
                 type: ActionTypes.REGISTER_FAIL,
                 payload: response.data
             });
         }
     } catch (error) {
+        toast.error("Registration failed");
         dispatch({
             type: ActionTypes.REGISTER_FAIL,
             payload: error

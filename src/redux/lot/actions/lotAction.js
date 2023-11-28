@@ -1,14 +1,26 @@
 import baseAPI from '../../baseAPI';
+import baseAPI2 from '../../baseAPI2';
 import { ActionTypes } from "../type";
 
 // Define your actions creators that will dispatch actions to your reducers
 export const fetchLots = () => async (dispatch) => {
     try {
-        const response = await baseAPI.get("/lots");
+        const response = await baseAPI.get("/lot-details");
+        // fetch batch details for each lot and then fetch region details for each batch
+        const transformedResponse = await Promise.all(response.data.map(async (lot) => {
+            const batchResponse = await baseAPI.get(`/batch-details/${lot.batchDetail.id}`);
+            const regionResponse = await baseAPI.get(`/regions/${batchResponse.data.region.id}`);
+            return {
+                ...lot,
+                batch: batchResponse.data.batchNo,
+                region: regionResponse.data.name,
+                createdAt: new Date(lot.createdAt).toLocaleString(),
+            };
+        }));
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_LOTS,
-                payload: response.data,
+                payload: transformedResponse,
             });
         } else {
             dispatch({
@@ -26,7 +38,7 @@ export const fetchLots = () => async (dispatch) => {
 
 export const fetchLot = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/lots/${id}`);
+        const response = await baseAPI.get(`/lot-details/${id}`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_LOT,
@@ -48,7 +60,8 @@ export const fetchLot = (id) => async (dispatch) => {
 
 export const createLot = (data) => async (dispatch) => {
     try {
-        const response = await baseAPI.post("/lots", data);
+        const response = await baseAPI.post("/lot-details", data);
+
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.CREATE_LOT,
@@ -70,7 +83,7 @@ export const createLot = (data) => async (dispatch) => {
 
 export const updateLot = (id, data) => async (dispatch) => {
     try {
-        const response = await baseAPI.put(`/lots/${id}`, data);
+        const response = await baseAPI.put(`/lot-details/${id}`, data);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.UPDATE_LOT,
@@ -92,7 +105,7 @@ export const updateLot = (id, data) => async (dispatch) => {
 
 export const deleteLot = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.delete(`/lots/${id}`);
+        const response = await baseAPI.delete(`/lot-details/${id}`);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.DELETE_LOT,
@@ -114,11 +127,23 @@ export const deleteLot = (id) => async (dispatch) => {
 
 export const fetchLotsByBatch = (id) => async (dispatch) => {
     try {
-        const response = await baseAPI.get(`/batch-details/${id}/lot-details`);
+
+        console.log("id:", id);
+        const response = await baseAPI2.get(`/batch-details/${id}/lot-details`);
+        const transformedResponse = await Promise.all(response.data.map(async (lot) => {
+            const batchResponse = await baseAPI.get(`/batch-details/${lot.batchDetail.id}`);
+            const regionResponse = await baseAPI.get(`/regions/${batchResponse.data.region.id}`);
+            return {
+                ...lot,
+                batch: batchResponse.data.batchNo,
+                region: regionResponse.data.name,
+                createdAt: new Date(lot.createdAt).toLocaleString(),
+            };
+        }));
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_LOTS_BY_BATCH,
-                payload: response.data,
+                payload: transformedResponse,
             });
         } else {
             dispatch({
@@ -139,3 +164,10 @@ export const cleanUp = () => async (dispatch) => {
         type: ActionTypes.CLEAN_UP,
     });
 };
+
+export const setSelectedLot = (lot) => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.FETCH_LOT,
+        payload: lot,
+    });
+}

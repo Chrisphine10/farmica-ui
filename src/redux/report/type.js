@@ -1,0 +1,6 @@
+export const ActionTypes = {
+    CREATE_REPORT: 'CREATE_REPORT',
+    FETCH_REPORT: 'FETCH_REPORT',
+    FETCH_STYLE_REPORT: 'FETCH_STYLE_REPORT',
+    ERROR: 'ERROR',
+}

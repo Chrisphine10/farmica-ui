@@ -21,7 +21,7 @@ function Copyright(props) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mvuna.co.ke/">
-                mVuna System
+                Farmica System
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -98,9 +98,12 @@ export default function Reset() {
                     alignItems: 'center',
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <LockOutlinedIcon />
-                </Avatar>
+                <img
+                    style={{ width: "300px", marginBottom: "20px" }}
+                    src="/logo.jpg"
+                    alt="logo"
+                />
+                <br />
                 <Typography component="h1" variant="h5">
                     Reset Password
                 </Typography>

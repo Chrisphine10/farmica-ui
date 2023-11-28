@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Typography, Link, FormControl, InputLabel, Select, MenuItem, InputAdornment } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Button, TextField, Typography, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import CircularProgress from '@mui/material/CircularProgress';
-import Backdrop from '@mui/material/Backdrop';
-import Snackbar from '@mui/material/Snackbar';
 import CssBaseline from '@mui/material/CssBaseline';
-import { counties } from "kenya";
 import { register } from '../../redux/auth/actions/authAction';
 import { format } from 'date-fns';
+import { toast } from 'react-toastify';
 
 
 function Copyright(props) {
@@ -20,7 +16,7 @@ function Copyright(props) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mvuna.co.ke/">
-                mVuna System
+                Farmica System
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -28,19 +24,11 @@ function Copyright(props) {
     );
 }
 
-const defaultTheme = createTheme();
 
 export default function SignUp() {
-    const [isLoading, setLoading] = useState(false);
-    const userDetails = useSelector(state => state.auth.user);
-    const marketFacilitator = useSelector((state) => state.accounts.marketFacilitator);
-    const registrationError = useSelector((state) => state.auth.error);
-    const marketFacilitatorError = useSelector((state) => state.accounts.error);
     const navigate = useNavigate();
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [openError, setOpenError] = useState("");
     const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
+    const registrationHolder = useSelector((state) => state.auth.registrationHolder);
 
     const [userRegistrationData, setUserRegistrationData] = useState({
         login: '',
@@ -49,135 +37,57 @@ export default function SignUp() {
         email: '',
         imageUrl: "null",
         activated: true,
-        langKey: "EN",
+        langKey: "en",
         createdBy: "Website",
-        createdDate: '',
+        createdDate: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
+        lastModifiedBy: "Website",
+        lastModifiedDate: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
         authorities: [
             "ROLE_USER"
         ],
         password: '',
     });
 
-    const [userMarketFacilitatorData, setUserMarketFacilitatorData] = useState(
-        {
-            county: '',
-            gender: '',
-            ageRange: '',
-            createdAt: '',
-            numberOfZones: 0,
-            updateAt: '',
-            user: {
-                "id": 0,
-                "login": "string"
+
+    const handleSubmit = async () => {
+        const success = validateData(userRegistrationData);
+        if (success) {
+            const newData = {
+                ...userRegistrationData,
+                login: userRegistrationData.firstName,
             }
-        });
-
-
-
-
-
-
-
-
-
-    useEffect(() => {
-        console.log("registrationError: " + registrationError);
-        if (registrationError !== null && registrationError !== undefined && registrationError !== "") {
-            if (registrationError.detail === undefined || registrationError.detail === null || registrationError.detail === "") {
-                setOpenError(registrationError.message);
-            } else {
-                setOpenError(registrationError.detail);
-            }
-            // wait for 2 seconds
+            delete newData.confirmPassword;
+            dispatch(register(newData));
             setTimeout(() => {
-                setOpenSnackbar(true);
-                setLoading(false);
+                navigate('/login');
             }, 2000);
         }
-    }, [registrationError]);
+    };
 
 
     useEffect(() => {
-        if (marketFacilitator !== null && marketFacilitator.id !== undefined && marketFacilitator !== "") {
-            console.log("marketFacilitator");
-            setLoading(false);
-            navigate('/login');
-        }
-    }, [marketFacilitator, navigate]);
-
-    useEffect(() => {
-        console.log("marketFacilitatorError: " + marketFacilitatorError);
-        if (marketFacilitatorError !== null && marketFacilitatorError !== undefined && marketFacilitatorError !== "") {
-            setOpenError(marketFacilitatorError.detail);
-            // wait for 2 seconds
+        if (registrationHolder) {
             setTimeout(() => {
-                setOpenSnackbar(true);
-                setLoading(false);
-            }, 2000);
+                navigate('/login');
+            }, 1000);
         }
-    }, [marketFacilitatorError]);
-
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const error = await validateData();
-        setOpenError(error);
-        console.log(error);
-        if (error !== null) {
-            setOpenSnackbar(true);
-            setLoading(false);
-        } else {
-            setLoading(true);
-            // set user registration data
-            dispatch(register(userRegistrationData));
-        }
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-    const handleOpen = () => {
-        setOpen(true);
-    };
-    // Define the AgeRange enum
-    const AgeRange = {
-        AGE_18_TO_24: 'AGE_18_TO_24',
-        AGE_25_TO_34: 'AGE_25_TO_34',
-        AGE_35_TO_44: 'AGE_35_TO_44',
-        AGE_45_TO_54: 'AGE_45_TO_54',
-        AGE_55_TO_64: 'AGE_55_TO_64',
-        AGE_OVER_65: 'AGE_OVER_65',
-    };
-
-    const Gender = {
-        MALE: 'MALE',
-        FEMALE: 'FEMALE'
-    }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [registrationHolder]);
 
     const validateData = (data) => {
         // all names should be at least 3 characters long
-        if (data.fname.length < 3 || data.lname.length < 3) {
-            return "Name should be at least 3 characters long";
+        if (data.firstName.length < 3 || data.lastName.length < 3) {
+            toast.error("Name should be at least 3 characters long");
+            return false;
+        } else if (data.password.length < 6) {
+            toast.error("Password should be at least 6 characters long");
+            return false;
+        } else if (data.password !== data.confirmPassword) {
+            toast.error("Password and confirm password should match");
+            return false;
+        } else {
+            return true;
         }
-        // phone number should be 9 digits long
-        if (data.phone.length !== 9) {
-            return "Phone number should be 9 digits long";
-        }
-        // password should be at least 8 characters long
-        if (data.password.length < 8) {
-            return "Password should be at least 8 characters long";
-        }
-        // password and confirm password should match   
-        if (data.password !== data.confirmPassword) {
-            return "Password and confirm password should match";
-        }
-        // email should be valid
-        if (!data.email.includes('@')) {
-            return "Email should be valid";
-        }
-        return null;
-
     }
 
 
@@ -200,18 +110,9 @@ export default function SignUp() {
             >
                 <img
                     style={{ width: '300px', marginBottom: '20px' }}
-                    src="/mVuna.png" alt="logo" />
+                    src="/logo.jpg" alt="logo" />
                 <h1>Sign Up</h1>
-                {openError !== null ? <Snackbar
-                    open={openSnackbar}
-                    autoHideDuration={2000}
-                    onClose={() => setOpenSnackbar(false)}
-                    message={openError}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                ></Snackbar> : null}
-                <Box component="form"
-                    noValidate
-                    onSubmit={handleSubmit}
+                <Box
                     sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
@@ -222,6 +123,7 @@ export default function SignUp() {
                         name="fname"
                         autoComplete="first-name"
                         autoFocus
+                        onChange={(e) => setUserRegistrationData({ ...userRegistrationData, firstName: e.target.value })}
                     />
                     <TextField
                         margin="normal"
@@ -232,22 +134,7 @@ export default function SignUp() {
                         name="lname"
                         autoComplete="last-name"
                         autoFocus
-                    />
-                    <TextField
-                        label="Phone Number"
-                        required
-                        id="phone"
-                        name='phone'
-                        type="number"
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    +254
-                                </InputAdornment>
-                            ),
-                        }}
+                        onChange={(e) => setUserRegistrationData({ ...userRegistrationData, lastName: e.target.value })}
                     />
                     <TextField
                         margin="normal"
@@ -257,63 +144,7 @@ export default function SignUp() {
                         name="email"
                         autoComplete="email"
                         autoFocus
-                    />
-                    <FormControl fullWidth margin="normal" required>
-                        <InputLabel id="gender">Gender</InputLabel>
-                        <Select
-                            name='gender'
-                            required
-                            label="Gender"
-                        >
-                            {Object.values(Gender).map((gender) => (
-                                <MenuItem key={gender} value={gender}>
-                                    {gender}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Age Range</InputLabel>
-                        <Select
-                            label="Age Range"
-                            name='ageRange'
-                            required
-                        >
-                            {Object.values(AgeRange).map((ageRange) => (
-                                <MenuItem key={ageRange.at} value={ageRange}>
-                                    {ageRange}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    {/* Add dropdown for counties */}
-                    <FormControl
-                        fullWidth
-                        margin="normal"
-                        required
-                    >
-                        <InputLabel id="county">County</InputLabel>
-                        <Select
-                            labelId="county"
-                            name='county'
-                            label="County"
-                        >
-                            {counties.map((county) => (
-                                county.id === null ? null : <MenuItem key={county.name} value={county.name}>
-                                    {county.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="numberOfZones"
-                        label="Number of Zones"
-                        type="number"
-                        id="numberOfZones"
-                        autoComplete="current-password"
+                        onChange={(e) => setUserRegistrationData({ ...userRegistrationData, email: e.target.value })}
                     />
                     <TextField
                         margin="normal"
@@ -324,6 +155,8 @@ export default function SignUp() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        autoFocus
+                        onChange={(e) => setUserRegistrationData({ ...userRegistrationData, password: e.target.value })}
                     />
                     <TextField
                         margin="normal"
@@ -334,21 +167,18 @@ export default function SignUp() {
                         type="password"
                         id="confirmPassword"
                         autoComplete="current-password"
+                        autoFocus
+                        onChange={(e) => setUserRegistrationData({ ...userRegistrationData, confirmPassword: e.target.value })}
                     />
                     <Button
                         type="submit"
                         fullWidth
-                        variant="contained"
+                        color='success'
+                        variant="outlined"
                         sx={{ mt: 3, mb: 2 }}
-                        onClick={handleOpen}
+                        onClick={handleSubmit}
                     >
-                        {isLoading ? <Backdrop
-                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                            open={open}
-                            onClick={handleClose}
-                        >
-                            <CircularProgress color="inherit" />
-                        </Backdrop> : 'Sign Up'}
+                        Submit
                     </Button>
                     <Grid container>
                         <Grid item xs>

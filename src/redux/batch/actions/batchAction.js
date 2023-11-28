@@ -1,14 +1,25 @@
 import baseAPI from '../../baseAPI';
 import { ActionTypes } from "../type";
+import { toast } from 'react-toastify';
 
 // Define your actions creators that will dispatch actions to your reducers
 export const fetchBatches = () => async (dispatch) => {
     try {
         const response = await baseAPI.get("/batch-details");
+        // fetch region details for each batch
+        const transformedResponse = await Promise.all(response.data.map(async (batch) => {
+            const regionResponse = await baseAPI.get(`/regions/${batch.region.id}`);
+            return {
+                ...batch,
+                region: regionResponse.data.name,
+                createdAt: new Date(batch.createdAt).toLocaleString(),
+            };
+        }));
+        console.log(transformedResponse);
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_BATCHES,
-                payload: response.data,
+                payload: transformedResponse,
             });
         } else {
             dispatch({
@@ -48,13 +59,16 @@ export const fetchBatch = (id) => async (dispatch) => {
 
 export const createBatch = (data) => async (dispatch) => {
     try {
+        console.log(data);
         const response = await baseAPI.post("/batch-details", data);
-        if (response.status === 200) {
+        if (response.status === 201) {
+            toast.success('Batch created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_BATCH,
                 payload: response.data,
             });
         } else {
+            toast.error('Batch creation failed!');
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,
@@ -138,5 +152,12 @@ export const fetchBatchesByRegion = (regionId) => async (dispatch) => {
 export const cleanup = () => async (dispatch) => {
     dispatch({
         type: ActionTypes.CLEANUP,
+    });
+}
+
+export const setSelectedBatch = (batch) => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.FETCH_BATCH,
+        payload: batch,
     });
 }

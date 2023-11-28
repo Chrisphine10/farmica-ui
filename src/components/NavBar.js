@@ -17,14 +17,13 @@ import { styled, useTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useAuth } from '../helpers/auth/AuthProvider';
 import { Link } from 'react-router-dom';
 import { useMenu } from '../helpers/menu/MenuProvider';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { ColorLens, LocationCity, LocationOn, Recycling } from '@mui/icons-material';
+import { AssignmentTurnedIn, Cached, Map, ConfirmationNumber, Archive, Style, Dashboard, MonetizationOn, HomeWork } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -106,27 +105,35 @@ const NavBar = () => {
     setOpen(true);
   };
 
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
 
   const logout = async () => {
     auth.logout();
   };
 
-
-  const menuItems = [
-    { icon: <DashboardIcon />, text: 'Dashboard', to: '/' },
+  const menuItems1 = [
+    { icon: <Dashboard />, text: 'Dashboard', to: '/' },
     // add item for zones
-    { icon: <LocationCity />, text: 'Packing Zones', to: '/zones-list' },
+    { icon: <AssignmentTurnedIn />, text: 'Packing Zones', to: '/zones-list' },
+    // add item for warehouses
+    { icon: <HomeWork />, text: 'Warehouses', to: '/warehouse-list' },
     // add item for reworks
-    { icon: <Recycling />, text: 'Reworks', to: '/rework-list' },
-    // add item for regions
-    { icon: <LocationOn />, text: 'Regions', to: '/regions-list' },
+    { icon: <Cached />, text: 'Reworks', to: '/rework-list' },
+    // add item for sales
+    { icon: <MonetizationOn />, text: 'Sales', to: '/sales-list' },
+  ];
+
+  const menuItems2 = [
     // add item for styles
-    { icon: <ColorLens />, text: 'Styles', to: '/styles-list' },
+    { icon: <Style />, text: 'Styles', to: '/styles-list' },
+    // add item for lots
+    { icon: <ConfirmationNumber />, text: 'Lots', to: '/lots-list' },
+    // add item for regions
+    { icon: <Archive />, text: 'Batch', to: '/batch-list' },
+    // add item for regions
+    { icon: <Map />, text: 'Regions', to: '/regions-list' },
   ];
 
   const iconStyles = {
@@ -149,7 +156,7 @@ const NavBar = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ height: 70, display: 'flex', justifyContent: 'center' }}>
+      <AppBar color='success' position="fixed" open={open} sx={{ height: 70, display: 'flex', justifyContent: 'center' }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -163,11 +170,41 @@ const NavBar = () => {
           >
             <MenuIcon />
           </IconButton>
+          <div>
+            <img src="./logo.png" alt="Farmica" width={50} height={50} />
+          </div>
           <Typography variant="h6" noWrap component="div">
-            Farmica
+            Farmica Management System
           </Typography>
           <Box sx={{ ml: 'auto' }}>
-
+            <div>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={() => {
+                  window.location.href = '/profile';
+                }}
+                sx={{
+                  marginRight: 5,
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <AccountCircleIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={logout}
+                edge="start"
+                sx={{
+                  marginRight: 5,
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <ExitToAppIcon />
+              </IconButton>
+            </div>
           </Box>
         </Toolbar>
       </AppBar>
@@ -184,7 +221,7 @@ const NavBar = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {menuItems.map((item, index) => (
+          {menuItems1.map((item, index) => (
             <ListItem key={item.text} sx={{ display: 'block' }}>
               <Link to={item.to}
                 style={linkStyle}
@@ -202,33 +239,19 @@ const NavBar = () => {
         </List>
         <Divider />
         <List>
-          {['Account', 'Logout'].map((text, index) => (
-            <ListItem key={text} sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  if (text === 'Logout') {
-                    logout();
-                  } else {
-                    window.location.href = '/user-details';
-                  }
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index === 0 ? <AccountCircleIcon /> : <ExitToAppIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+          {menuItems2.map((item, index) => (
+            <ListItem key={item.text} sx={{ display: 'block' }}>
+              <Link to={item.to}
+                style={linkStyle}
+                color="inherit">
+                <ListItemButton sx={{ justifyContent: open ? 'initial' : 'center' }}>
+                  <ListItemIcon sx={iconStyles}>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} sx={{
+                    ...textStyles,
+                    fontWeight: item.to === selectedMenu ? 'bold' : 'normal',
+                  }} />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
         </List>

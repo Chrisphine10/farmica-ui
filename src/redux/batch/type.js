@@ -6,6 +6,6 @@ export const ActionTypes = {
     FETCH_BATCHES: 'FETCH_BATCHES',
     FETCH_BATCHES_BY_REGION: 'FETCH_BATCHES_BY_REGION',
     ERROR: 'ERROR',
-    CLEAN_UP: 'CLEAN_UP',
+    CLEANUP: 'CLEANUP',
 
 }

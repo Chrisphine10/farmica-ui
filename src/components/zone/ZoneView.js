@@ -1,34 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from '../Layout';
 import {
-    FormControl,
+    TextField,
     Paper,
     Grid,
     Typography,
     Button,
     ButtonGroup,
     Divider,
-    Select,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { createWarehouse } from '../../redux/warehouse/actions/warehouseAction';
+import { fetchZone } from '../../redux/zones/actions/zonesAction';
+import { useDispatch } from 'react-redux';
+import { format } from 'date-fns';
+import { fetchComments, createComment } from '../../redux/comment/actions/commentsAction';
 
 const ZoneView = () => {
     const zone = useSelector(state => state.zones.zone);
-    const [status, setStatus] = useState(zone.status);
+    const warehouseData = useSelector(state => state.warehouse.warehouse);
+    const comments = useSelector(state => state.comments.comments);
+    const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const statusOptions = [
-        { value: 'PACKING', label: 'PACKING' },
-        { value: 'WAREHOUSE', label: 'WAREHOUSE' },
-        { value: 'SALES', label: 'SALES' },
-        { value: 'REWORK', label: 'REWORK' },
-    ];
+    const [warehouse, setWarehouse] = useState({
+        id: '',
+        warehouseDate: format(new Date(), "yyyy-MM-dd"),
+        numberOfCTNs: '',
+        startCTNNumber: '',
+        endCTNNumber: '',
+        packingZoneDetail: {
+            id: '',
+        },
+        lotDetail: {
+            id: '',
+        },
+        style: {
+            id: '',
+        },
+        user: {
+            id: '',
+        }
+    });
 
-    const handleStatusChange = (e) => {
-        setStatus(e.target.value);
-        toast.success('Status Updated Successfully to ' + e.target.value);
+    const handleAddToWarehouse = () => {
+        if (validateWarehouse()) {
+            dispatch(createWarehouse(warehouse, zone));
+            dispatch(fetchComments('PACKING'));
+            setOpen(false);
+        }
     }
+
+
+    const handleDelete = () => {
+        toast.success('Delete functionality not implemented yet!');
+    }
+
+    const validateWarehouse = () => {
+        if (warehouse.numberOfCTNs === '' || warehouse.startCTNNumber === '' || warehouse.endCTNNumber === '') {
+            toast.error('Please fill all the fields!');
+            return false;
+        } else if (warehouse.numberOfCTNs > zone.numberOfCTNs) {
+            toast.error('Number of CTNs cannot be greater than the number of CTNs in the zone!');
+            return false;
+        } else if (warehouse.startCTNNumber < zone.startCTNNumber || warehouse.endCTNNumber > zone.endCTNNumber) {
+            toast.error('Start CTN Number and End CTN Number should be in the range of the zone!');
+            return false;
+        } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
+            toast.error('Start CTN Number cannot be greater than End CTN Number!');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    useEffect(() => {
+        setWarehouse({
+            ...warehouse,
+            packingZoneDetail: {
+                id: zone.id,
+            },
+            lotDetail: {
+                id: zone.lotDetail.id,
+            },
+            style: {
+                id: zone.style.id,
+            },
+            user: {
+                id: zone.user.id,
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [zone]);
+
+    useEffect(() => {
+        if (warehouseData.id) {
+            console.log(warehouseData);
+            dispatch(fetchZone(zone.id));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [warehouseData]);
 
 
     return (
@@ -138,13 +211,13 @@ const ZoneView = () => {
                             <Grid item xs={6} >
                                 <Typography variant="body2">
                                     <strong>
-                                        Status:
+                                        Lot Number:
                                     </strong>
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} >
                                 <Typography variant="body2">
-                                    {zone.status}
+                                    {zone.lotNumber}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -153,13 +226,13 @@ const ZoneView = () => {
                             <Grid item xs={6} >
                                 <Typography variant="body2">
                                     <strong>
-                                        Lot Details:
+                                        Batch Code:
                                     </strong>
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} >
                                 <Typography variant="body2">
-                                    {zone.lotDetails}
+                                    {zone.batchNumber}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -168,13 +241,43 @@ const ZoneView = () => {
                             <Grid item xs={6} >
                                 <Typography variant="body2">
                                     <strong>
-                                        Created At:
+                                        uiCode:
                                     </strong>
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} >
                                 <Typography variant="body2">
-                                    {zone.createdAt}
+                                    {zone.uicode}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={2} padding={1}>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    <strong>
+                                        Region Code:
+                                    </strong>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    {zone.regionName}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={2} padding={1}>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    <strong>
+                                        Style Name:
+                                    </strong>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    {zone.styleName}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -190,13 +293,13 @@ const ZoneView = () => {
                             }>Edit</Button>
                             <Button color='success' onClick={
                                 () => {
-                                    navigate('/zones-list');
+                                    navigate(-1);
                                 }
 
                             }>Back</Button>
                             <Button color='warning' onClick={
                                 () => {
-                                    navigate('/edit-zone');
+                                    handleDelete();
                                 }
                             }>Delete</Button>
                         </ButtonGroup>
@@ -210,18 +313,75 @@ const ZoneView = () => {
                             maxWidth: '700px',
                         }
                     } >
-                        <h1>Change Status</h1>
-                        <FormControl fullWidth>
-                            <Select native value={status} onChange={handleStatusChange}>
-                                {
-                                    statusOptions.map((option) => (
-                                        <option key={option.value} value={option.value}>
-                                            {option.label}
-                                        </option>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
+                        <h1>Create Warehouse</h1>
+                        {!open && <Button
+                            color='success'
+                            onClick={() => {
+                                setOpen(true);
+                            }}
+                        >
+                            Add To Warehouse
+                        </Button>}
+                        {open && <>
+                            <TextField
+                                id="outlined-basic"
+                                label="Number of Cartons"
+                                variant="outlined"
+                                fullWidth
+                                margin='normal'
+                                type='number'
+                                required
+                                onChange={(e) => {
+                                    setWarehouse({
+                                        ...warehouse,
+                                        numberOfCTNs: e.target.value,
+                                    });
+                                }}
+                            />
+                            <TextField
+                                id="outlined-basic"
+                                label="Start CTN Number"
+                                variant="outlined"
+                                fullWidth
+                                margin='normal'
+                                type='number'
+                                required
+                                onChange={(e) => {
+                                    setWarehouse({
+                                        ...warehouse,
+                                        startCTNNumber: e.target.value,
+                                    });
+                                }}
+                            />
+                            <TextField
+                                id="outlined-basic"
+                                label="End CTN Number"
+                                variant="outlined"
+                                fullWidth
+                                margin='normal'
+                                type='number'
+                                required
+                                onChange={(e) => {
+                                    setWarehouse({
+                                        ...warehouse,
+                                        endCTNNumber: e.target.value,
+                                    });
+                                }}
+                            />
+                            <Divider />
+                            <ButtonGroup fullWidth style={{ marginTop: '10px' }}>
+                                <Button color='success'
+                                    onClick={() => {
+                                        handleAddToWarehouse();
+                                    }}
+                                >Add To Warehouse </Button>
+                                <Button color='warning'
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                >Cancel</Button>
+                            </ButtonGroup>
+                        </>}
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -240,17 +400,21 @@ const ZoneView = () => {
                                 margin: '10px',
                             }
                         }>
-                            <Typography variant="body2">
-                                {zone.comment}
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                {zone.comment}
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                {zone.comment}
-                            </Typography>
+                            {comments.map((comment) => {
+                                return (
+                                    <div key={comment.id}>
+                                        <Typography variant="body2">
+                                            <strong>
+                                                {comment.user.firstName} {comment.user.lastName}:
+                                            </strong>
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            {comment.comment}
+                                        </Typography>
+                                        <Divider />
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Paper>
                 </Grid>
