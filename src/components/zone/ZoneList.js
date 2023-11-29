@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Layout from '../Layout';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button, ButtonGroup, Tabs, Tab, CircularProgress } from '@mui/material';
-import { fetchZones, setSelectedZone } from '../../redux/zones/actions/zonesAction';
+import { cleanUpComment } from '../../redux/comment/actions/commentsAction';
+import { fetchZones, setSelectedZone, cleanUpZone } from '../../redux/zones/actions/zonesAction';
 import { useNavigate } from 'react-router-dom';
 import { fetchStyles } from '../../redux/style/actions/styleAction';
 
@@ -39,15 +40,15 @@ const ZoneList = () => {
                 <>
                     <ButtonGroup variant="outlined" aria-label="outlined primary button group">
                         <Button color='success' onClick={
-                            () => {
-                                dispatch(setSelectedZone(zonesList.find((row) => row.id === params.id)));
+                            async () => {
+                                dispatch(await setSelectedZone(await zonesList.find((row) => row.id === params.id)));
                                 navigate('/view-zone');
                             }
                         }>View</Button>
                         <Button color='warning'
                             onClick={
-                                () => {
-                                    dispatch(setSelectedZone(zonesList.find((row) => row.id === params.id)));
+                                async () => {
+                                    dispatch(await setSelectedZone(await zonesList.find((row) => row.id === params.id)));
                                     navigate('/add-zone/' + params.id);
                                 }
                             }
@@ -62,7 +63,10 @@ const ZoneList = () => {
         setLoading(true);
         dispatch(fetchZones());
         dispatch(fetchStyles());
+        dispatch(cleanUpComment());
+        dispatch(cleanUpZone());
     }, [dispatch]);
+
 
     useEffect(() => {
         if (zonesList.length > 0) {
@@ -71,6 +75,7 @@ const ZoneList = () => {
             setLoading(false);
         }
     }, [selectedTab, zonesList]);
+
 
 
     return (

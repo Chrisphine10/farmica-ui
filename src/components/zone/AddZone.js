@@ -54,6 +54,7 @@ const AddZone = () => {
     const zoneCreated = useSelector(state => state.zones.created);
     const zoneUpdated = useSelector(state => state.zones.updated);
     const regionsList = useSelector(state => state.region.regions);
+    const [loading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [lotData, setLotData] = useState({
         id: '',
@@ -117,7 +118,7 @@ const AddZone = () => {
     }, [id]);
 
     useEffect(() => {
-        if (id && batch.id !== undefined) {
+        if (id && batch.id !== undefined && lot && lot.id !== undefined && zoneDetails && zoneDetails.id !== undefined) {
             setBatchData({
                 ...batchData,
                 id: batch.id,
@@ -165,6 +166,7 @@ const AddZone = () => {
                     id: zoneDetails.user.id
                 }
             });
+            setLoading(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [batch]);
@@ -222,7 +224,7 @@ const AddZone = () => {
 
     return (
         <Layout>
-            <Container>
+            {!loading ? <Container>
                 <div style={{ marginBottom: 1 }}>
                     <Tabs
                         value={currentPage}
@@ -561,6 +563,7 @@ const AddZone = () => {
                     </ButtonGroup>
                 ]) : null}
             </Container>
+                : <h1>Loading...</h1>}
         </Layout >
     );
 }

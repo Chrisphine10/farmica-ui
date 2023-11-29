@@ -22,6 +22,8 @@ const commentsReducer = (state = initialState, action) => {
             return { ...state, comment: action.payload };
         case ActionTypes.COMMENT_ERROR:
             return { ...state, error: action.payload };
+        case ActionTypes.CLEAN_UP:
+            return { ...state, comment: {}, comments: [] }
         default:
             return state;
     }

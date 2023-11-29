@@ -51,6 +51,7 @@ export const fetchComment = (id) => async (dispatch) => {
 
 export const createComment = (comment) => async (dispatch) => {
     try {
+        console.log(comment);
         const response = await baseAPI2.post('/comments', comment);
         if (response.status === 201) {
             toast.success('Comment created successfully!');
@@ -121,7 +122,7 @@ export const deleteComment = (id) => async (dispatch) => {
     }
 }
 
-export const cleanUp = () => async (dispatch) => {
+export const cleanUpComment = () => async (dispatch) => {
     dispatch({
         type: ActionTypes.CLEAN_UP,
     });

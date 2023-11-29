@@ -22,6 +22,8 @@ const ZoneView = () => {
     const zone = useSelector(state => state.zones.zone);
     const warehouseData = useSelector(state => state.warehouse.warehouse);
     const comments = useSelector(state => state.comments.comments);
+    const comment = useSelector(state => state.comments.comment);
+    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -31,6 +33,7 @@ const ZoneView = () => {
         numberOfCTNs: '',
         startCTNNumber: '',
         endCTNNumber: '',
+        uicode: '',
         packingZoneDetail: {
             id: '',
         },
@@ -45,13 +48,47 @@ const ZoneView = () => {
         }
     });
 
+    const [commentData, setCommentData] = useState({
+        comment: "",
+        status: "PACKING",
+        zoneId: 0,
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
+        user: {
+            id: localStorage.getItem("userId"),
+        }
+    });
+
+
     const handleAddToWarehouse = () => {
         if (validateWarehouse()) {
             dispatch(createWarehouse(warehouse, zone));
-            dispatch(fetchComments('PACKING'));
             setOpen(false);
         }
     }
+
+    const handleCommentChange = (e) => {
+        setCommentData({
+            ...commentData,
+            comment: e.target.value,
+            zoneId: zone.id,
+        });
+    }
+
+    const handleCommentSubmit = () => {
+        dispatch(createComment(commentData));
+    }
+
+    useEffect(() => {
+        if ((comment.id !== undefined || comment) && (zone && zone.id === comment.zoneId)) {
+            dispatch(fetchComments(zone.id, 'PACKING'));
+            setCommentData({
+                ...commentData,
+                comment: '',
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [comment]);
+
 
 
     const handleDelete = () => {
@@ -77,27 +114,31 @@ const ZoneView = () => {
     }
 
     useEffect(() => {
-        setWarehouse({
-            ...warehouse,
-            packingZoneDetail: {
-                id: zone.id,
-            },
-            lotDetail: {
-                id: zone.lotDetail.id,
-            },
-            style: {
-                id: zone.style.id,
-            },
-            user: {
-                id: zone.user.id,
-            }
-        });
+        console.log(zone);
+        if (zone && zone.id) {
+            dispatch(fetchComments(zone.id, 'PACKING'));
+            setLoading(true);
+            setWarehouse({
+                ...warehouse,
+                packingZoneDetail: {
+                    id: zone.id,
+                },
+                lotDetail: {
+                    id: zone.lotDetail.id,
+                },
+                style: {
+                    id: zone.style.id,
+                },
+                user: {
+                    id: zone.user.id,
+                },
+            });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [zone]);
 
     useEffect(() => {
         if (warehouseData.id) {
-            console.log(warehouseData);
             dispatch(fetchZone(zone.id));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,7 +147,7 @@ const ZoneView = () => {
 
     return (
         <Layout>
-            <Grid container spacing={2}>
+            {loading ? <><Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={4} lg={6}>
                     <Paper sx={
                         {
@@ -394,22 +435,32 @@ const ZoneView = () => {
                             }
                         }>
                         <h1>Comments</h1>
-                        <Button color='success'>Add Comment</Button>
+                        <TextField
+                            fullWidth
+                            margin='normal'
+                            label='Comment'
+                            variant='outlined'
+                            multiline
+                            rowsMax={4}
+                            onChange={handleCommentChange}
+                        />
+                        <Button
+                            color='success'
+                            onClick={handleCommentSubmit}
+                        >Add Comment</Button>
                         <div style={
                             {
                                 margin: '10px',
                             }
                         }>
+                            <Divider />
                             {comments.map((comment) => {
                                 return (
                                     <div key={comment.id}>
-                                        <Typography variant="body2">
+                                        <Typography variant="body2" margin={1}>
                                             <strong>
                                                 {comment.user.firstName} {comment.user.lastName}:
-                                            </strong>
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            {comment.comment}
+                                            </strong> <span>{comment.comment}</span>
                                         </Typography>
                                         <Divider />
                                     </div>
@@ -419,6 +470,10 @@ const ZoneView = () => {
                     </Paper>
                 </Grid>
             </Grid>
+            </ >
+                : <><h1>Loading...</h1>
+                </>
+            }
         </Layout>
     )
 }
