@@ -17,6 +17,7 @@ import { fetchZone } from '../../redux/zones/actions/zonesAction';
 import { useDispatch } from 'react-redux';
 import { format } from 'date-fns';
 import { fetchComments, createComment } from '../../redux/comment/actions/commentsAction';
+import QRCode from 'react-qr-code';
 
 const ZoneView = () => {
     const zone = useSelector(state => state.zones.zone);
@@ -92,7 +93,7 @@ const ZoneView = () => {
 
 
     const handleDelete = () => {
-        toast.success('Delete functionality not implemented yet!');
+        toast.error('Delete functionality not implemented yet!');
     }
 
     const validateWarehouse = () => {
@@ -347,6 +348,15 @@ const ZoneView = () => {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
+                    <Paper sx={
+                        {
+                            padding: '16px',
+                            margin: 'auto',
+                            maxWidth: '700px',
+                        }
+                    } > <h1>QR Code</h1>
+                        <QRCode value={zone.uicode} />
+                    </Paper>
                     <Paper sx={
                         {
                             padding: '16px',
