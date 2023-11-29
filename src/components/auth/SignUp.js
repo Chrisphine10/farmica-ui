@@ -48,19 +48,39 @@ export default function SignUp() {
         password: '',
     });
 
+    const extractUsername = (email) => {
+        // Split the email address at the '@' symbol
+        const parts = email.split('@');
+
+        // Check if the email is in a valid format
+        if (parts.length === 2) {
+            // The username is the first part before the '@' symbol
+            const username = parts[0];
+            return username;
+        } else {
+            // Handle invalid email format
+            console.error('Invalid email format');
+            return null;
+        }
+    };
 
     const handleSubmit = async () => {
         const success = validateData(userRegistrationData);
-        if (success) {
-            const newData = {
-                ...userRegistrationData,
-                login: userRegistrationData.firstName,
+        const login = extractUsername(userRegistrationData.email);
+        if (login === null) {
+            toast.error("Email you have provided is not valid");
+        } else {
+            if (success) {
+                const newData = {
+                    ...userRegistrationData,
+                    login: login,
+                }
+                delete newData.confirmPassword;
+                dispatch(register(newData));
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
             }
-            delete newData.confirmPassword;
-            dispatch(register(newData));
-            setTimeout(() => {
-                navigate('/login');
-            }, 2000);
         }
     };
 
@@ -144,7 +164,9 @@ export default function SignUp() {
                         name="email"
                         autoComplete="email"
                         autoFocus
-                        onChange={(e) => setUserRegistrationData({ ...userRegistrationData, email: e.target.value })}
+                        onChange={(e) => setUserRegistrationData({
+                            ...userRegistrationData, email: e.target.value
+                        })}
                     />
                     <TextField
                         margin="normal"

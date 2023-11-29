@@ -3,14 +3,12 @@ import baseAPI2 from '../../baseAPI2';
 import { ActionTypes } from "../type";
 import { toast } from 'react-toastify';
 
-export const createZone = (zone, lot) => async (dispatch) => {
+export const createZone = (zone) => async (dispatch) => {
     try {
         const response = await baseAPI.post("/packing-zone-details", zone);
         // update uicode in the zone
         console.log(response.data);
-        const newResponse = await baseAPI.put(`/packing-zone-details/${response.data.id}`,
-            { ...response.data, uicode: `${lot.uicode}ZONE${response.data.zone.id}` });
-        if (response.status === 201 && newResponse.status === 200) {
+        if (response.status === 201) {
             toast.success('Zone created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_ZONE,
@@ -32,15 +30,11 @@ export const createZone = (zone, lot) => async (dispatch) => {
     }
 }
 
-export const updateZone = (zone, lot) => async (dispatch) => {
+export const updateZone = (zone) => async (dispatch) => {
     try {
-        console.log(lot);
         const response = await baseAPI.put(`/packing-zone-details/${zone.id}`, zone);
         console.log("response", response);
         if (response.status === 200) {
-            const newResponse = await baseAPI.put(`/packing-zone-details/${response.data.id}`,
-                { ...response.data, uicode: `${lot.uicode}ZONE${response.data.zone.id}` });
-            console.log("newResponse", newResponse.data);
             toast.success('Zone updated successfully!');
             dispatch({
                 type: ActionTypes.UPDATE_ZONE,

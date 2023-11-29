@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../helpers/auth/AuthProvider";
+import { toast } from 'react-toastify';
 
 function Copyright(props) {
   return (
@@ -47,22 +48,42 @@ export default function Login() {
 
   const redirectPath = location.state?.path || "/";
 
+  const extractUsername = (email) => {
+    // Split the email address at the '@' symbol
+    const parts = email.split('@');
+
+    // Check if the email is in a valid format
+    if (parts.length === 2) {
+      // The username is the first part before the '@' symbol
+      const username = parts[0];
+      return username;
+    } else {
+      // Handle invalid email format
+      console.error('Invalid email format');
+      return null;
+    }
+  };
 
   const handleSubmit = async (event) => {
     setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    var status = await auth.signin(
-      data.get("login"),
-      data.get("password"),
-      data.get("rememberMe") ? true : false
-    );
-    if (status) {
-      setOpenSuccess(true);
-      navigate(redirectPath);
+    const login = extractUsername(data.get("login"));
+    if (login === null) {
+      toast.error("Email you have provided is invalid.");
     } else {
-      setOpenError(true);
-      localStorage.clear();
+      var status = await auth.signin(
+        data.get("login"),
+        data.get("password"),
+        data.get("rememberMe") ? true : false
+      );
+      if (status) {
+        setOpenSuccess(true);
+        navigate(redirectPath);
+      } else {
+        setOpenError(true);
+        localStorage.clear();
+      }
     }
     setLoading(false);
   };

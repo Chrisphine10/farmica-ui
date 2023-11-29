@@ -51,6 +51,7 @@ const AddZone = () => {
     const batchesList = useSelector(state => state.batch.batches);
     const batch = useSelector(state => state.batch.batch);
     const lot = useSelector(state => state.lot.lot);
+    const zoneCreated = useSelector(state => state.zones.created);
     const regionsList = useSelector(state => state.region.regions);
     const [editMode, setEditMode] = useState(false);
     const [lotData, setLotData] = useState({
@@ -88,6 +89,16 @@ const AddZone = () => {
         dispatch(fetchBatches());
         dispatch(fetchRegions());
     }, [dispatch, zoneDetails]);
+
+    useEffect(() => {
+        zoneDetails.uicode = zoneDetails.uicode + 'ZONE' + zoneDetails.id;
+        if (zoneCreated) {
+            dispatch(updateZone(zoneDetails));
+            navigate('/zones-list');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [zoneCreated]);
+
 
     useEffect(() => {
         if (id) {
@@ -167,10 +178,7 @@ const AddZone = () => {
 
     const handleSubmit = () => {
         if (validateZone()) {
-            dispatch(createZone(zone, lotData));
-            setTimeout(() => {
-                navigate('/zones-list');
-            }, 1000);
+            dispatch(createZone(zone));
         }
     };
 
@@ -191,8 +199,7 @@ const AddZone = () => {
 
     const handleUpdate = () => {
         if (validateZone()) {
-            dispatch(updateZone(zone, lotData));
-            navigate('/zones-list');
+            dispatch(updateZone(zone));
         }
     };
 

@@ -2,6 +2,7 @@ import { ActionTypes } from "../type";
 
 // Define your initial state
 const initialState = {
+    created: false,
     zones: [],
     zone: {},
     error: null,
@@ -11,9 +12,9 @@ const initialState = {
 const zonesReducer = (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.CREATE_ZONE:
-            return { ...state, zone: action.payload };
+            return { ...state, zone: action.payload, created: true };
         case ActionTypes.UPDATE_ZONE:
-            return { ...state, zone: action.payload };
+            return { ...state, zone: action.payload, created: true };
         case ActionTypes.DELETE_ZONE:
             return { ...state, zone: action.payload };
         case ActionTypes.FETCH_ZONE:
