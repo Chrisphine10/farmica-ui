@@ -73,7 +73,7 @@ export default function Login() {
       toast.error("Email you have provided is invalid.");
     } else {
       var status = await auth.signin(
-        data.get("login"),
+        login,
         data.get("password"),
         data.get("rememberMe") ? true : false
       );
