@@ -348,7 +348,7 @@ const ZoneView = () => {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <Paper sx={
+                    {!open && <Paper sx={
                         {
                             padding: '16px',
                             margin: 'auto',
@@ -357,6 +357,7 @@ const ZoneView = () => {
                     } > <h1>QR Code</h1>
                         <QRCode value={zone.uicode} />
                     </Paper>
+                    }
                     <Paper sx={
                         {
                             padding: '16px',
