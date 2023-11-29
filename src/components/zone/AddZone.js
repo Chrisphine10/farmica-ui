@@ -52,6 +52,7 @@ const AddZone = () => {
     const batch = useSelector(state => state.batch.batch);
     const lot = useSelector(state => state.lot.lot);
     const zoneCreated = useSelector(state => state.zones.created);
+    const zoneUpdated = useSelector(state => state.zones.updated);
     const regionsList = useSelector(state => state.region.regions);
     const [editMode, setEditMode] = useState(false);
     const [lotData, setLotData] = useState({
@@ -84,17 +85,23 @@ const AddZone = () => {
     let key = 0;
 
     useEffect(() => {
-        console.log("zoneDetails", zoneDetails);
         dispatch(fetchStyles());
         dispatch(fetchBatches());
         dispatch(fetchRegions());
-    }, [dispatch, zoneDetails]);
+    }, [dispatch]);
 
     useEffect(() => {
-        zoneDetails.uicode = zoneDetails.uicode + 'ZONE' + zoneDetails.id;
-        if (zoneCreated) {
-            dispatch(updateZone(zoneDetails));
+        if (zoneUpdated) {
             navigate('/zones-list');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [zoneUpdated]);
+
+    useEffect(() => {
+        zoneDetails.uicode = batch.batchNo + 'LOT' + lot.lotNo + 'ZONE' + zoneDetails.id;
+        if (zoneCreated) {
+            dispatch(cleanUp());
+            dispatch(updateZone(zoneDetails, false));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [zoneCreated]);
@@ -140,6 +147,7 @@ const AddZone = () => {
             setZone({
                 ...zone,
                 id: zoneDetails.id,
+                uicode: zoneDetails.uicode,
                 packageDate: zoneDetails.packageDate,
                 pdnDate: zoneDetails.pdnDate,
                 weightReceived: zoneDetails.weightReceived,
@@ -199,7 +207,7 @@ const AddZone = () => {
 
     const handleUpdate = () => {
         if (validateZone()) {
-            dispatch(updateZone(zone));
+            dispatch(updateZone(zone, true));
         }
     };
 

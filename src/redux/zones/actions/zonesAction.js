@@ -30,18 +30,22 @@ export const createZone = (zone) => async (dispatch) => {
     }
 }
 
-export const updateZone = (zone) => async (dispatch) => {
+export const updateZone = (zone, status) => async (dispatch) => {
     try {
         const response = await baseAPI.put(`/packing-zone-details/${zone.id}`, zone);
         console.log("response", response);
         if (response.status === 200) {
-            toast.success('Zone updated successfully!');
+            if (status) {
+                toast.success('Zone updated successfully!');
+            }
             dispatch({
                 type: ActionTypes.UPDATE_ZONE,
                 payload: response.data,
             });
         } else {
-            toast.error('Zone updation failed!');
+            if (status) {
+                toast.error('Zone updation failed!');
+            }
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,
@@ -228,5 +232,11 @@ export const setSelectedZone = (item) => async (dispatch) => {
     dispatch({
         type: ActionTypes.FETCH_ZONE,
         payload: item,
+    });
+}
+
+export const cleanUpZone = () => async (dispatch) => {
+    dispatch({
+        type: ActionTypes.CLEAN_UP,
     });
 }
