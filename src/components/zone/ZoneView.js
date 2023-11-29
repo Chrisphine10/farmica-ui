@@ -457,7 +457,10 @@ const ZoneView = () => {
                             {comments.map((comment) => {
                                 return (
                                     <div key={comment.id}>
-                                        <Typography variant="body2" margin={1}>
+                                        <Typography variant="body2" margin={1} style={{
+                                            overflow: 'hidden',
+                                            maxWidth: '90%',
+                                        }}>
                                             <strong>
                                                 {comment.user.firstName} {comment.user.lastName}:
                                             </strong> <span>{comment.comment}</span>
