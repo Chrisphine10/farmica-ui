@@ -113,6 +113,9 @@ const AddZone = () => {
             setEditMode(true);
             dispatch(fetchBatch(zoneDetails.batchId));
             dispatch(fetchLot(zoneDetails.lotDetail.id));
+        } else {
+            console.log("zoneDetails", zoneDetails);
+            setLoading(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
