@@ -355,7 +355,7 @@ const ZoneView = () => {
                             maxWidth: '700px',
                         }
                     } > <h1>QR Code</h1>
-                        <QRCode value={zone.uicode} />
+                        <QRCode value={'http://54.175.184.10:3000/qr-code/' + zone.uicode} />
                     </Paper>
                     }
                     <Paper sx={

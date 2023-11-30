@@ -228,6 +228,40 @@ export const fetchZonesByLot = (lot) => async (dispatch) => {
     }
 }
 
+export const fetchZoneByUicode = (uicode) => async (dispatch) => {
+    try {
+        const response = await baseAPI2.get(`/packing-zone-details/uicode/${uicode}`);
+        const lotResponse = await baseAPI.get(`/lot-details/${response.data.lotDetail.id}`);
+        const styleResponse = await baseAPI.get(`/styles/${response.data.style.id}`);
+        const batchResponse = await baseAPI.get(`/batch-details/${lotResponse.data.batchDetail.id}`);
+        const regionResponse = await baseAPI.get(`/regions/${batchResponse.data.region.id}`);
+        const transformedResponse = {
+            ...response.data,
+            lotNumber: lotResponse.data.lotNo,
+            styleName: styleResponse.data.name,
+            batchNumber: batchResponse.data.batchNo,
+            regionName: regionResponse.data.name,
+        };
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.FETCH_ZONE,
+                payload: transformedResponse,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
 export const setSelectedZone = (item) => async (dispatch) => {
     dispatch({
         type: ActionTypes.FETCH_ZONE,

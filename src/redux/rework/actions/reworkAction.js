@@ -60,6 +60,28 @@ export const fetchRework = (id) => async (dispatch) => {
     }
 }
 
+export const fetchReworksByUiCode = (uiCode) => async (dispatch) => {
+    try {
+        const response = await baseAPI2.get(`/rework-details/${uiCode}`);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.FETCH_REWORK,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
 export const createRework = (data, warehouse) => async (dispatch) => {
     try {
         const response = await baseAPI2.post("/rework-details", data);

@@ -227,3 +227,24 @@ export const setSelectedSale = (sale) => async (dispatch) => {
     });
 };
 
+export const fetchSalesByUiCode = (uiCode) => async (dispatch) => {
+    try {
+        const response = await baseAPI2.get(`/sales-details/uicode/${uiCode}`);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.FETCH_SALE,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}

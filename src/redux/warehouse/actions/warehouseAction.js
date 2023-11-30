@@ -226,6 +226,28 @@ export const fetchWarehousesByStyle = (style) => async (dispatch) => {
     }
 }
 
+export const fetchWarehouseByUicode = (uicode) => async (dispatch) => {
+    try {
+        const response = await baseAPI2.get(`/warehouse-details/uicode${uicode}`);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.FETCH_WAREHOUSE,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
 export const cleanUp = () => async (dispatch) => {
     dispatch({
         type: ActionTypes.CLEAN_UP,

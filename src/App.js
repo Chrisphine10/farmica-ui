@@ -31,6 +31,7 @@ import WarehouseList from './components/warehouse/WarehouseList';
 import WarehouseView from './components/warehouse/WarehouseView';
 import SalesList from './components/sales/SalesList';
 import SalesView from './components/sales/SalesView';
+import QrCodeRedirect from './components/QrCodeRedirect';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -71,6 +72,7 @@ function App() {
                       <Route path="/view-sales" element={<RequireAuth><SalesView /></RequireAuth>} />
                       <Route path="/view-style" element={<RequireAuth><StylesView /></RequireAuth>} />
                       <Route path="/view-batch" element={<RequireAuth><BatchView /></RequireAuth>} />
+                      <Route path="/qr-code/:id" element={<QrCodeRedirect />} />
                     </Routes>
                   </Router>
                 </div>
