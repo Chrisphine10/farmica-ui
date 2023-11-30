@@ -23,10 +23,10 @@ const QrCodeRedirect = () => {
             } else if (id.includes("SALES")) {
                 dispatch(fetchSalesByUiCode(id));
                 navigate('/view-sales');
-            } else if (id.includes("WAREHOUSE")) {
+            } else if (id.includes("WAREHOUSE") && !id.includes("REWORK") && !id.includes("SALES")) {
                 dispatch(fetchWarehouseByUicode(id));
                 navigate('/view-warehouse');
-            } else if (id.includes("ZONE")) {
+            } else if (id.includes("ZONE") && !id.includes("WAREHOUSE")) {
                 dispatch(fetchZoneByUicode(id));
                 navigate('/view-zone');
             } else {
