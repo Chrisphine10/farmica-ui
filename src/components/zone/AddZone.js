@@ -42,6 +42,7 @@ const AddZone = () => {
         },
         user: {
             id: localStorage.getItem('userId'),
+            login: localStorage.getItem('login'),
         }
     });
     const { id } = useParams();
@@ -65,8 +66,9 @@ const AddZone = () => {
         },
         user: {
             id: localStorage.getItem('userId'),
+            login: localStorage.getItem('login'),
         },
-        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS"),
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
     });
     const [currentPage, setCurrentPage] = useState('BATCH');
     const [newBatch, setNewBatch] = useState(false);
@@ -75,12 +77,13 @@ const AddZone = () => {
         id: '',
         batchNo: '',
         drier: '',
-        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS"),
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
         region: {
             id: '',
         },
         user: {
             id: localStorage.getItem('userId'),
+            login: localStorage.getItem('login'),
         }
     });
     let key = 0;
