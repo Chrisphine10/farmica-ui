@@ -1,5 +1,5 @@
 // components/HomePage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -26,6 +26,8 @@ import { useMenu } from '../helpers/menu/MenuProvider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { AssignmentTurnedIn, Cached, Map, ConfirmationNumber, Archive, Style, Dashboard, MonetizationOn, HomeWork } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
+import { fetchVariables } from '../redux/variable/actions/variableAction';
+import { useSelector, useDispatch } from 'react-redux';
 
 const drawerWidth = 240;
 
@@ -102,7 +104,9 @@ const NavBar = () => {
   const { selectedMenu } = useMenu();
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const variables = useSelector((state) => state.variable.variables);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleItemClick = (to) => {
     localStorage.setItem("selectedMenu", to);
@@ -121,8 +125,14 @@ const NavBar = () => {
   };
 
   const handleAIquery = () => {
+    console.log(variables[0])
     const uniqueCode = uuidv4();
   }
+
+  useEffect(() => {
+    dispatch(fetchVariables());
+  }, [dispatch]);
+
 
   const menuItems1 = [
     { icon: <Dashboard style={{ color: localStorage.getItem("selectedMenu") === '/' ? '#4CAF50' : '' }} />, text: 'Dashboard', to: '/' },
