@@ -32,6 +32,7 @@ const AddZone = () => {
         weightReceived: '',
         weightBalance: '',
         numberOfCTNs: '',
+        receivedCTNs: '',
         startCTNNumber: '',
         endCTNNumber: '',
         lotDetail: {
@@ -102,9 +103,9 @@ const AddZone = () => {
     }, [zoneUpdated]);
 
     useEffect(() => {
-        zoneDetails.uicode = batch.batchNo + 'LOT' + lot.lotNo + 'ZONE' + zoneDetails.id;
+        zoneDetails.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zoneDetails.id;
         if (zoneCreated) {
-            dispatch(cleanUp());
+            // dispatch(cleanUp());
             dispatch(updateZone(zoneDetails, false));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,7 +149,7 @@ const AddZone = () => {
                 user: {
                     id: localStorage.getItem('userId'),
                 },
-                uicode: batch.batchNo + 'LOT' + lot.lotNo,
+                uicode: batch.batchNo + '-L' + lot.lotNo,
             });
 
             setZone({
@@ -160,6 +161,7 @@ const AddZone = () => {
                 weightReceived: zoneDetails.weightReceived,
                 weightBalance: zoneDetails.weightBalance,
                 numberOfCTNs: zoneDetails.numberOfCTNs,
+                receivedCTNs: zoneDetails.receivedCTNs,
                 startCTNNumber: zoneDetails.startCTNNumber,
                 endCTNNumber: zoneDetails.endCTNNumber,
                 lotDetail: {
@@ -178,6 +180,13 @@ const AddZone = () => {
     }, [batch]);
 
     const handleChange = (e) => {
+        // add receivedCTNs from numberOfCTNs
+        if (e.target.name === 'numberOfCTNs') {
+            setZone({
+                ...zone,
+                receivedCTNs: e.target.value,
+            });
+        }
         setZone({
             ...zone,
             [e.target.name]: e.target.value,

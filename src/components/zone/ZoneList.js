@@ -81,7 +81,7 @@ const ZoneList = () => {
     return (
         <Layout>
             <div style={{ width: '100%' }}>
-                <h1>Packing Zones Items </h1>
+                <h1>Packing Zones List </h1>
                 <div style={{ marginBottom: 20 }}>
                     <ButtonGroup variant="outlined" aria-label="outlined primary button group">
                         <Button color='success' href="/add-zone">Add Item </Button>

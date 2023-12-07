@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createWarehouse } from '../../redux/warehouse/actions/warehouseAction';
+import { createWarehouse, updateWarehouseUicode } from '../../redux/warehouse/actions/warehouseAction';
 import { fetchZone } from '../../redux/zones/actions/zonesAction';
 import { useDispatch } from 'react-redux';
 import { format } from 'date-fns';
@@ -24,6 +24,7 @@ const ZoneView = () => {
     const warehouseData = useSelector(state => state.warehouse.warehouse);
     const comments = useSelector(state => state.comments.comments);
     const comment = useSelector(state => state.comments.comment);
+    const warehouseCreated = useSelector(state => state.warehouse.created);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const ZoneView = () => {
         id: '',
         warehouseDate: format(new Date(), "yyyy-MM-dd"),
         numberOfCTNs: '',
+        receivedCTNs: '',
         startCTNNumber: '',
         endCTNNumber: '',
         uicode: '',
@@ -49,6 +51,8 @@ const ZoneView = () => {
         }
     });
 
+
+
     const [commentData, setCommentData] = useState({
         comment: "",
         status: "PACKING",
@@ -58,6 +62,15 @@ const ZoneView = () => {
             id: localStorage.getItem("userId"),
         }
     });
+
+    useEffect(() => {
+        warehouseData.uicode = zone.uicode + 'W' + warehouseData.id;
+        if (warehouseCreated) {
+            // dispatch(cleanUp());
+            dispatch(updateWarehouseUicode(warehouseData));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [warehouseCreated]);
 
 
     const handleAddToWarehouse = () => {
@@ -121,6 +134,7 @@ const ZoneView = () => {
             setLoading(true);
             setWarehouse({
                 ...warehouse,
+                uicode: zone.uicode + 'WAREHOUSE',
                 packingZoneDetail: {
                     id: zone.id,
                 },
@@ -215,6 +229,21 @@ const ZoneView = () => {
                             <Grid item xs={6} >
                                 <Typography variant="body2">
                                     {zone.numberOfCTNs}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={2} padding={1}>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    <strong>
+                                        Received CTNs:
+                                    </strong>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    {zone.receivedCTNs}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -387,6 +416,7 @@ const ZoneView = () => {
                                     setWarehouse({
                                         ...warehouse,
                                         numberOfCTNs: e.target.value,
+                                        receivedCTNs: e.target.value,
                                     });
                                 }}
                             />

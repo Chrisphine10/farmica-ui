@@ -14,25 +14,32 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { updateWarehouse } from '../../redux/warehouse/actions/warehouseAction';
-import { createSale } from '../../redux/sales/actions/salesAction';
-import { createRework } from '../../redux/rework/actions/reworkAction';
+import { fetchWarehouse, updateWarehouse } from '../../redux/warehouse/actions/warehouseAction';
+import { createSale, updateSaleUiCode, cleanUpSales } from '../../redux/sales/actions/salesAction';
+import { createRework, updateReworkUiCode, cleanUpRework } from '../../redux/rework/actions/reworkAction';
 import { fetchZone } from '../../redux/zones/actions/zonesAction';
 import { toast } from 'react-toastify';
+import { format } from 'date-fns';
 
 const WarehouseView = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [status, setStatus] = useState('STATUS_CHANGE');
     const selectedWarehouse = useSelector((state) => state.warehouse.warehouse);
+    const selectedSale = useSelector((state) => state.sales.sale);
+    const selectedRework = useSelector((state) => state.rework.rework);
+    const salesCreated = useSelector((state) => state.sales.created);
+    const reworkCreated = useSelector((state) => state.rework.created);
     const zone = useSelector((state) => state.zones.zone);
     const [editMode, setEditMode] = useState(false);
     const [warehouse, setWarehouse] = useState({
         id: '',
         warehouseDate: Date.now(),
         numberOfCTNs: '',
+        receivedCTNs: '',
         startCTNNumber: '',
         endCTNNumber: '',
+        uicode: '',
         packingZoneDetail: {
             id: '',
         },
@@ -44,6 +51,7 @@ const WarehouseView = () => {
         },
         user: {
             id: '',
+            login: '',
         }
     });
 
@@ -53,6 +61,8 @@ const WarehouseView = () => {
         numberOfCTNs: '',
         startCTNNumber: '',
         endCTNNumber: '',
+        uicode: '',
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
         warehouseDetail: {
             id: '',
         },
@@ -63,7 +73,8 @@ const WarehouseView = () => {
             id: '',
         },
         user: {
-            id: '',
+            id: localStorage.getItem('userId'),
+            login: localStorage.getItem('login'),
         }
     });
 
@@ -75,6 +86,7 @@ const WarehouseView = () => {
         startCTNNumber: '',
         endCTNNumber: '',
         status: 'PENDING',
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
         warehouseDetail: {
             id: '',
         },
@@ -82,18 +94,22 @@ const WarehouseView = () => {
             id: '',
         },
         user: {
-            id: '',
+            id: localStorage.getItem('userId'),
+            login: localStorage.getItem('login'),
         }
     });
 
     useEffect(() => {
+        console.log("selectedWarehouse: ", selectedWarehouse);
         setWarehouse({
             ...warehouse,
             id: selectedWarehouse.id,
             warehouseDate: selectedWarehouse.warehouseDate,
             numberOfCTNs: selectedWarehouse.numberOfCTNs,
+            receivedCTNs: selectedWarehouse.receivedCTNs,
             startCTNNumber: selectedWarehouse.startCTNNumber,
             endCTNNumber: selectedWarehouse.endCTNNumber,
+            uicode: selectedWarehouse.uicode,
             packingZoneDetail: {
                 id: selectedWarehouse.packingZoneDetail.id,
             },
@@ -105,13 +121,14 @@ const WarehouseView = () => {
             },
             user: {
                 id: selectedWarehouse.user.id,
+                login: selectedWarehouse.user.login,
             }
         });
 
         setSalesData({
             ...salesData,
-            id: selectedWarehouse.id,
-            salesDate: Date.now(),
+            salesDate: format(new Date(), "yyyy-MM-dd"),
+            uicode: selectedWarehouse.uicode + '-S' + Math.random(),
             packingZoneDetail: {
                 id: selectedWarehouse.packingZoneDetail.id,
             },
@@ -121,29 +138,55 @@ const WarehouseView = () => {
             style: {
                 id: selectedWarehouse.style.id,
             },
-            user: {
-                id: selectedWarehouse.user.id,
+            warehouseDetail: {
+                id: selectedWarehouse.id,
             }
         });
 
         setReworkData({
             ...reworkData,
-            id: selectedWarehouse.id,
-            pdnDate: Date.now(),
-            reworkDate: Date.now(),
+            pdnDate: format(new Date(), "yyyy-MM-dd"),
+            reworkDate: format(new Date(), "yyyy-MM-dd"),
+            uicode: selectedWarehouse.uicode + '-R' + Math.random(),
             packingZoneDetail: {
                 id: selectedWarehouse.packingZoneDetail.id,
             },
             lotDetail: {
                 id: selectedWarehouse.lotDetail.id,
             },
-            user: {
-                id: selectedWarehouse.user.id,
+            warehouseDetail: {
+                id: selectedWarehouse.id,
             }
         });
         dispatch(fetchZone(selectedWarehouse.packingZoneDetail.id));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedWarehouse]);
+
+    useEffect(() => {
+        if (salesCreated && salesData.numberOfCTNs !== '') {
+            console.log("selectedSale: ", selectedSale);
+            selectedSale.uicode = selectedWarehouse.uicode + '-S' + selectedSale.id;
+            dispatch(updateSaleUiCode(selectedSale));
+            dispatch(cleanUpSales());
+            dispatch(fetchWarehouse(selectedWarehouse.id));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [salesCreated]);
+
+    useEffect(() => {
+        if (reworkCreated && reworkData.numberOfCTNs !== '') {
+            selectedRework.uicode = selectedWarehouse.uicode + '-R' + selectedRework.id;
+            dispatch(updateReworkUiCode(reworkData));
+            dispatch(cleanUpRework());
+            dispatch(fetchWarehouse(selectedWarehouse.id));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [reworkCreated]);
+
+    // setSalesData({
+    //     ...salesData,
+    //     uicode: salesData.uicode,
+    // });
 
     const statusOptions = [
         { value: 'STATUS_CHANGE', label: 'STATUS CHANGE' },
@@ -166,14 +209,26 @@ const WarehouseView = () => {
     };
 
     const handleSales = () => {
+        delete salesData.id;
+        console.log("warehouse.numberOfCTNs: ", warehouse.numberOfCTNs);
         if (validateSales()) {
-            dispatch(createSale(salesData));
+            dispatch(createSale(salesData, warehouse));
+            setWarehouse({
+                ...warehouse,
+                numberOfCTNs: warehouse.numberOfCTNs - salesData.numberOfCTNs,
+            });
+            setStatus('STATUS_CHANGE');
         }
     }
 
     const handleRework = () => {
         if (validateRework()) {
-            dispatch(createRework(reworkData));
+            dispatch(createRework(reworkData, warehouse));
+            setWarehouse({
+                ...warehouse,
+                numberOfCTNs: warehouse.numberOfCTNs - reworkData.numberOfCTNs,
+            });
+            setStatus('STATUS_CHANGE');
         }
     }
 
@@ -275,6 +330,21 @@ const WarehouseView = () => {
                             </Grid>
                         </Grid>
                         <Divider />
+                        <Grid container spacing={2} padding={1}>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    <strong>
+                                        Received CTNs:
+                                    </strong>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    {selectedWarehouse.receivedCTNs}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider />
 
                         <Grid container spacing={2} padding={1}>
                             <Grid item xs={6} >
@@ -332,6 +402,21 @@ const WarehouseView = () => {
                             <Grid item xs={6} >
                                 <Typography variant="body2">
                                     {selectedWarehouse.batchNumber}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={2} padding={1}>
+                            <Grid item xs={6}>
+                                <Typography variant="body2">
+                                    <strong>
+                                        UiCode:
+                                    </strong>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography variant="body2">
+                                    {selectedWarehouse.uicode}
                                 </Typography>
                             </Grid>
                         </Grid>

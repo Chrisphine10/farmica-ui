@@ -9,9 +9,9 @@ export const createSale = (sale, warehouse) => async (dispatch) => {
         // update warehouse
         const newWarehouse = {
             ...warehouse,
-            quantity: warehouse.numberOfCTNs - sale.numberOfCTNs,
+            numberOfCTNs: warehouse.numberOfCTNs - sale.numberOfCTNs,
         };
-        const warehouseResponse = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, newWarehouse);
+        const warehouseResponse = await baseAPI2.patch(`/warehouse-details/${warehouse.id}`, newWarehouse);
         if (response.status === 201 && warehouseResponse.status === 200) {
             toast.success('Sale created successfully!');
             dispatch({
@@ -20,6 +20,30 @@ export const createSale = (sale, warehouse) => async (dispatch) => {
             });
         } else {
             toast.error('Sale creation failed!');
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            });
+        }
+    } catch (error) {
+        toast.error('Sale creation failed!');
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
+export const updateSaleUiCode = (sale) => async (dispatch) => {
+    console.log("Sale UI Code Updated ");
+    try {
+        const response = await baseAPI2.put(`/sales-details/${sale.id}`, sale);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.UPDATE_SALE,
+                payload: response.data,
+            });
+        } else {
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,
@@ -50,7 +74,7 @@ export const updateSale = (sale, warehouse, originalNumber) => async (dispatch) 
         // update warehouse
         const newWarehouse = {
             ...warehouse,
-            quantity: (warehouse.numberOfCTNs + originalNumber) - sale.numberOfCTNs,
+            numberOfCTNs: (warehouse.numberOfCTNs + originalNumber) - sale.numberOfCTNs,
         };
         const warehouseResponse = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, newWarehouse);
         if (response.status === 200 && warehouseResponse.status === 200) {
@@ -157,7 +181,7 @@ export const fetchSales = () => async (dispatch) => {
     }
 }
 
-export const cleanUp = () => async (dispatch) => {
+export const cleanUpSales = () => async (dispatch) => {
     dispatch({
         type: ActionTypes.CLEAN_UP,
     });

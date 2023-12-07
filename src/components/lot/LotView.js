@@ -178,7 +178,13 @@ const LotsView = () => {
             </div>
             <h2>Sales Details</h2>
             <div style={{ width: '100%' }}>
-                {loading ? <CircularProgress /> :
+                {loading ? <CircularProgress
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                    }}
+                /> :
                     <DataGrid
                         rows={sales}
                         columns={columnsSales}

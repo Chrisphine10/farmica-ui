@@ -1,5 +1,6 @@
 import baseAPI from '../../baseAPI';
 import { ActionTypes } from "../type";
+import { toast } from 'react-toastify';
 
 // Define your actions creators that will dispatch actions to your reducers
 export const fetchRegions = () => async (dispatch) => {
@@ -52,17 +53,20 @@ export const createRegion = (data) => async (dispatch) => {
         console.log(data);
         const response = await baseAPI.post("/regions", data);
         if (response.status === 200) {
+            toast.success('Region created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_REGION,
                 payload: response.data,
             });
         } else {
+            toast.error('Region creation failed!');
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,
             });
         }
     } catch (error) {
+        toast.error('Region creation failed!');
         dispatch({
             type: ActionTypes.ERROR,
             payload: error,
@@ -96,17 +100,22 @@ export const deleteRegion = (id) => async (dispatch) => {
     try {
         const response = await baseAPI.delete(`/regions/${id}`);
         if (response.status === 200) {
+            toast.success('Region deleted successfully!');
             dispatch({
                 type: ActionTypes.DELETE_REGION,
                 payload: response.data,
             });
         } else {
+            toast.error('Failed to delete region!');
+
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,
             });
         }
     } catch (error) {
+        toast.error('Failed to delete region!');
+
         dispatch({
             type: ActionTypes.ERROR,
             payload: error,

@@ -58,42 +58,54 @@ const LotList = () => {
     return (
         <Layout>
             <h1>Lots</h1>
-            <Tabs
-                onChange={(e, newValue) => setSelectedTab(newValue)}
-                value={selectedTab}
-                variant="scrollable"
-                scrollButtons="auto"
-                sx={
-                    {
-                        '& .MuiTabs-flexContainer': {
-                            borderBottom: 1,
-                            borderColor: 'divider',
-                        },
-                    }
-                }
-                key={key}
-            >
-                <Tab label="All" value="All" />
-                {regions && regions.map((region) => <Tab label={region.name} value={region.name} key={key++} />)}
-            </Tabs>
-            {loading ? <CircularProgress /> : <DataGrid
-                rows={filteredRows}
-                columns={columns}
-                disableSelectionOnClick
-                initialState={{
-                    filter: {
-                        filterModel: JSON.parse(localStorage.getItem('dataGridFilter6')) || {
-                            items: [{ columnField: 'ID', operatorValue: 'contains', value: '' }],
-                        },
-                    },
+            {loading ? <CircularProgress
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-50px',
+                    marginLeft: '-50px',
                 }}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                    toolbar: {
-                        showQuickFilter: true,
-                    },
-                }}
-            />}
+            /> :
+                <>
+                    <Tabs
+                        onChange={(e, newValue) => setSelectedTab(newValue)}
+                        value={selectedTab}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        sx={
+                            {
+                                '& .MuiTabs-flexContainer': {
+                                    borderBottom: 1,
+                                    borderColor: 'divider',
+                                },
+                            }
+                        }
+                        key={key}
+                    >
+                        <Tab label="All" value="All" />
+                        {regions && regions.map((region) => <Tab label={region.name} value={region.name} key={key++} />)}
+                    </Tabs>
+                    <DataGrid
+                        rows={filteredRows}
+                        columns={columns}
+                        disableSelectionOnClick
+                        initialState={{
+                            filter: {
+                                filterModel: JSON.parse(localStorage.getItem('dataGridFilter6')) || {
+                                    items: [{ columnField: 'ID', operatorValue: 'contains', value: '' }],
+                                },
+                            },
+                        }}
+                        slots={{ toolbar: GridToolbar }}
+                        slotProps={{
+                            toolbar: {
+                                showQuickFilter: true,
+                            },
+                        }}
+                    />
+                </>
+            }
         </Layout>
     );
 }

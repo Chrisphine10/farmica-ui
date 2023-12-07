@@ -9,6 +9,9 @@ export const fetchReworks = () => async (dispatch) => {
         const response = await baseAPI2.get("/rework-details");
         const transformedResponse = await Promise.all(response.data.map(async (rework) => {
             const lotResponse = await baseAPI.get(`/lot-details/${rework.lotDetail.id}`);
+            const warehouseResponse = await baseAPI.get(`/warehouse-details/${rework.warehouseDetail.id}`);
+            const packingZoneDetailResponse = await baseAPI.get(`/packing-zone-details/${warehouseResponse.data.packingZoneDetail.id}`);
+            const styleResponse = await baseAPI.get(`/styles/${packingZoneDetailResponse.data.style.id}`);
             const batchResponse = await baseAPI.get(`/batch-details/${lotResponse.data.batchDetail.id}`);
             const regionResponse = await baseAPI.get(`/regions/${batchResponse.data.region.id}`);
             return {
@@ -16,6 +19,7 @@ export const fetchReworks = () => async (dispatch) => {
                 lotNumber: lotResponse.data.lotNo,
                 batchNumber: batchResponse.data.batchNo,
                 regionName: regionResponse.data.name,
+                styleName: styleResponse.data.name,
             };
         }));
         if (response.status === 200) {
@@ -88,7 +92,7 @@ export const createRework = (data, warehouse) => async (dispatch) => {
         // update warehouse
         const newWarehouse = {
             ...warehouse,
-            quantity: warehouse.numberOfCTNs - data.numberOfCTNs,
+            numberOfCTNs: warehouse.numberOfCTNs - data.numberOfCTNs,
         };
         const warehouseResponse = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, newWarehouse);
         if (response.status === 201 && warehouseResponse.status === 200) {
@@ -105,12 +109,35 @@ export const createRework = (data, warehouse) => async (dispatch) => {
             });
         }
     } catch (error) {
+        toast.error('Rework creation failed!');
         dispatch({
             type: ActionTypes.ERROR,
             payload: error,
         });
     }
 };
+
+export const updateReworkUiCode = (data) => async (dispatch) => {
+    try {
+        const response = await baseAPI2.put(`/rework-details/${data.id}`, data);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.UPDATE_REWORK,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            });
+        }
+    } catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
 
 export const updateRework = (data, warehouse, originalNumber) => async (dispatch) => {
     try {
@@ -119,7 +146,7 @@ export const updateRework = (data, warehouse, originalNumber) => async (dispatch
         // update warehouse
         const newWarehouse = {
             ...warehouse,
-            quantity: (warehouse.numberOfCTNs + originalNumber) - data.numberOfCTNs,
+            numberOfCTNs: (warehouse.numberOfCTNs + originalNumber) - data.numberOfCTNs,
         };
         const warehouseResponse = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, newWarehouse);
 
@@ -188,7 +215,7 @@ export const fetchReworksByLot = (lotId) => async (dispatch) => {
     }
 };
 
-export const cleanUp = () => async (dispatch) => {
+export const cleanUpRework = () => async (dispatch) => {
     dispatch({
         type: ActionTypes.CLEAN_UP,
     });

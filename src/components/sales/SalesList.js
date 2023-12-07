@@ -4,8 +4,7 @@ import Layout from '../Layout';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button, ButtonGroup, Tabs, Tab, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { fetchRegions } from '../../redux/region/actions/regionAction';
-
+import { fetchStyles } from '../../redux/style/actions/styleAction';
 import { fetchSales, setSelectedSale } from '../../redux/sales/actions/salesAction';
 
 const SalesList = () => {
@@ -15,7 +14,7 @@ const SalesList = () => {
     const [loading, setLoading] = useState(false);
     const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedTabSales') || 'All');
     const [filteredRows, setFilteredRows] = useState([]);
-    const regions = useSelector((state) => state.region.regions);
+    const styles = useSelector((state) => state.style.styles);
 
     let key = 0;
 
@@ -49,13 +48,13 @@ const SalesList = () => {
     useEffect(() => {
         setLoading(true);
         dispatch(fetchSales());
-        dispatch(fetchRegions());
+        dispatch(fetchStyles());
         setLoading(false);
     }, [dispatch]);
 
     useEffect(() => {
         if (sales.length > 0 && sales[0].id) {
-            setFilteredRows(selectedTab === 'All' ? sales : sales.filter((row) => row.region === selectedTab));
+            setFilteredRows(selectedTab === 'All' ? sales : sales.filter((row) => row.styleName === selectedTab));
             localStorage.setItem('selectedTabSales', selectedTab);
             setLoading(false);
         }
@@ -65,28 +64,39 @@ const SalesList = () => {
         <Layout>
             <div style={{ height: '100%', width: '100%' }}>
                 <h1>Sales List</h1>
-                <Tabs value={selectedTab} onChange={(e, value) => setSelectedTab(value)}>
-                    <Tab label="All Regions" value="All" />
-                    {regions && regions.map((region) => <Tab label={region.name} value={region.name} key={key++} />)}
-                </Tabs>
-                {loading ? <CircularProgress /> : <DataGrid
-                    rows={filteredRows}
-                    columns={columns}
-                    disableSelectionOnClick
-                    initialState={{
-                        filter: {
-                            filterModel: JSON.parse(localStorage.getItem('dataGridFilter2')) || {
-                                items: [{ columnField: 'ID', operatorValue: 'contains', value: '' }],
+                {loading ? <CircularProgress
+                    size={24}
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px',
+                    }}
+                /> : <>
+                    <Tabs value={selectedTab} onChange={(e, value) => setSelectedTab(value)}>
+                        <Tab label="All Regions" value="All" />
+                        {styles && styles.map((style) => <Tab label={style.name} value={style.name} key={key++} />)}
+                    </Tabs>
+                    <DataGrid
+                        rows={filteredRows}
+                        columns={columns}
+                        disableSelectionOnClick
+                        initialState={{
+                            filter: {
+                                filterModel: JSON.parse(localStorage.getItem('dataGridFilter2')) || {
+                                    items: [{ columnField: 'ID', operatorValue: 'contains', value: '' }],
+                                },
                             },
-                        },
-                    }}
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                        },
-                    }}
-                />}
+                        }}
+                        slots={{ toolbar: GridToolbar }}
+                        slotProps={{
+                            toolbar: {
+                                showQuickFilter: true,
+                            },
+                        }}
+                    />
+                </>}
             </div>
         </Layout>
     )

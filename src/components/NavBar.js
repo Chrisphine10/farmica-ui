@@ -20,7 +20,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useAuth } from '../helpers/auth/AuthProvider';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMenu } from '../helpers/menu/MenuProvider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { AssignmentTurnedIn, Cached, Map, ConfirmationNumber, Archive, Style, Dashboard, MonetizationOn, HomeWork } from '@mui/icons-material';
@@ -100,6 +100,11 @@ const NavBar = () => {
   const { selectedMenu } = useMenu();
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
+
+  const handleItemClick = (to) => {
+    localStorage.setItem("selectedMenu", to);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -114,26 +119,22 @@ const NavBar = () => {
   };
 
   const menuItems1 = [
-    { icon: <Dashboard />, text: 'Dashboard', to: '/' },
-    // add item for zones
-    { icon: <AssignmentTurnedIn />, text: 'Packing Zones', to: '/zones-list' },
-    // add item for warehouses
-    { icon: <HomeWork />, text: 'Warehouses', to: '/warehouse-list' },
-    // add item for reworks
-    { icon: <Cached />, text: 'Reworks', to: '/rework-list' },
-    // add item for sales
-    { icon: <MonetizationOn />, text: 'Sales', to: '/sales-list' },
+    { icon: <Dashboard style={{ color: localStorage.getItem("selectedMenu") === '/' ? '#4CAF50' : '' }} />, text: 'Dashboard', to: '/' },
+    { icon: <AssignmentTurnedIn style={{ color: localStorage.getItem("selectedMenu") === '/zones-list' ? '#4CAF50' : '' }} />, text: 'Packing Zones', to: '/zones-list' },
+    { icon: <HomeWork style={{ color: localStorage.getItem("selectedMenu") === '/warehouse-list' ? '#4CAF50' : '' }} />, text: 'Warehouses', to: '/warehouse-list' },
+    { icon: <Cached style={{ color: localStorage.getItem("selectedMenu") === '/rework-list' ? '#4CAF50' : '' }} />, text: 'Reworks', to: '/rework-list' },
+    { icon: <MonetizationOn style={{ color: localStorage.getItem("selectedMenu") === '/sales-list' ? '#4CAF50' : '' }} />, text: 'Sales', to: '/sales-list' },
   ];
 
   const menuItems2 = [
     // add item for styles
-    { icon: <Style />, text: 'Styles', to: '/styles-list' },
+    { icon: <Style style={{ color: localStorage.getItem("selectedMenu") === '/styles-list' ? '#2196F3' : '' }} />, text: 'Styles', to: '/styles-list' },
     // add item for lots
-    { icon: <ConfirmationNumber />, text: 'Lots', to: '/lots-list' },
+    { icon: <ConfirmationNumber style={{ color: localStorage.getItem("selectedMenu") === '/lots-list' ? '#2196F3' : '' }} />, text: 'Lots', to: '/lots-list' },
     // add item for regions
-    { icon: <Archive />, text: 'Batch', to: '/batch-list' },
+    { icon: <Archive style={{ color: localStorage.getItem("selectedMenu") === '/batch-list' ? '#2196F3' : '' }} />, text: 'Batch', to: '/batch-list' },
     // add item for regions
-    { icon: <Map />, text: 'Regions', to: '/regions-list' },
+    { icon: <Map style={{ color: localStorage.getItem("selectedMenu") === '/regions-list' ? '#2196F3' : '' }} />, text: 'Regions', to: '/regions-list' },
   ];
 
   const iconStyles = {
@@ -183,7 +184,7 @@ const NavBar = () => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={() => {
-                  window.location.href = '/profile';
+                  navigate('/profile');
                 }}
                 sx={{
                   marginRight: 5,
@@ -223,7 +224,9 @@ const NavBar = () => {
         <List>
           {menuItems1.map((item, index) => (
             <ListItem key={item.text} sx={{ display: 'block' }}>
-              <Link to={item.to}
+              <Link
+                onClick={() => handleItemClick(item.to)}
+                to={item.to}
                 style={linkStyle}
                 color="inherit">
                 <ListItemButton sx={{ justifyContent: open ? 'initial' : 'center' }}>
@@ -242,6 +245,7 @@ const NavBar = () => {
           {menuItems2.map((item, index) => (
             <ListItem key={item.text} sx={{ display: 'block' }}>
               <Link to={item.to}
+                onClick={() => handleItemClick(item.to)}
                 style={linkStyle}
                 color="inherit">
                 <ListItemButton sx={{ justifyContent: open ? 'initial' : 'center' }}>

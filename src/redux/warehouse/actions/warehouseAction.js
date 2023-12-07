@@ -33,6 +33,29 @@ export const createWarehouse = (warehouse, zone) => async (dispatch) => {
     }
 }
 
+export const updateWarehouseUicode = (warehouse) => async (dispatch) => {
+    try {
+        const response = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, warehouse);
+        if (response.status === 200) {
+            dispatch({
+                type: ActionTypes.UPDATE_WAREHOUSE,
+                payload: response.data,
+            });
+        } else {
+            dispatch({
+                type: ActionTypes.ERROR,
+                payload: response.data,
+            })
+        }
+    }
+    catch (error) {
+        dispatch({
+            type: ActionTypes.ERROR,
+            payload: error,
+        });
+    }
+}
+
 export const updateWarehouse = (warehouse, zone, originalNumber) => async (dispatch) => {
     try {
         const response = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, warehouse);
@@ -102,10 +125,21 @@ export const deleteWarehouse = (id) => async (dispatch) => {
 export const fetchWarehouse = (id) => async (dispatch) => {
     try {
         const response = await baseAPI2.get(`/warehouse-details/${id}`);
+        const lotResponse = await baseAPI.get(`/lot-details/${response.data.lotDetail.id}`);
+        const styleResponse = await baseAPI.get(`/styles/${response.data.style.id}`);
+        const batchResponse = await baseAPI.get(`/batch-details/${lotResponse.data.batchDetail.id}`);
+        const regionResponse = await baseAPI.get(`/regions/${batchResponse.data.region.id}`);
+        const transformedResponse = {
+            ...response.data,
+            lotNumber: lotResponse.data.lotNo,
+            styleName: styleResponse.data.name,
+            batchNumber: batchResponse.data.batchNo,
+            regionName: regionResponse.data.name,
+        };
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_WAREHOUSE,
-                payload: response.data,
+                payload: transformedResponse,
             });
         } else {
             dispatch({
@@ -138,6 +172,7 @@ export const fetchWarehouses = () => async (dispatch) => {
             };
         }));
         if (response.status === 200) {
+            console.log(transformedResponse);
             dispatch({
                 type: ActionTypes.FETCH_WAREHOUSES,
                 payload: transformedResponse,

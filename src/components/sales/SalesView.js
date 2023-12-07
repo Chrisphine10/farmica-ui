@@ -28,6 +28,7 @@ const SalesView = () => {
         numberOfCTNs: '',
         startCTNNumber: '',
         endCTNNumber: '',
+        uicode: '',
         warehouseDetail: {
             id: '',
         },
@@ -82,6 +83,7 @@ const SalesView = () => {
             numberOfCTNs: selectedSale.numberOfCTNs,
             startCTNNumber: selectedSale.startCTNNumber,
             endCTNNumber: selectedSale.endCTNNumber,
+            uicode: selectedSale.uicode,
             warehouseDetail: {
                 id: selectedSale.warehouseDetail.id,
             },
@@ -197,6 +199,21 @@ const SalesView = () => {
                             <Grid item xs={6} >
                                 <Typography variant="body2">
                                     {selectedSale.lotNumber}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={2} padding={1}>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    <strong>
+                                        Uicode:
+                                    </strong>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <Typography variant="body2">
+                                    {selectedSale.uicode}
                                 </Typography>
                             </Grid>
                         </Grid>

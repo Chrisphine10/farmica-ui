@@ -1,5 +1,6 @@
 // import baseAPI from '../../baseAPI';
 import authAPI from '../../authAPI';
+import baseAPI from '../../baseAPI';
 import { ActionTypes } from "../type";
 import { toast } from 'react-toastify';
 
@@ -171,7 +172,7 @@ export const changePassword = (data) => async (dispatch, getState) => {
 
 export const getUser = () => async (dispatch, getState) => {
     try {
-        const response = await authAPI.get("account");
+        const response = await baseAPI.get("account");
         if (response.status === 200) {
             dispatch({
                 type: ActionTypes.FETCH_USER_DETAIL,

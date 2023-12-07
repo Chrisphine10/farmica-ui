@@ -13,6 +13,7 @@ import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import Verify from "./components/auth/Verify";
 import Reset from "./components/auth/Reset";
+import Profile from "./components/auth/Profile";
 import Dashboard from "./components/dashboard/Dashboard";
 import BatchList from "./components/batch/BatchList";
 import BatchView from './components/batch/BatchView';
@@ -53,6 +54,7 @@ function App() {
                       <Route path="/signup" element={<SignUp />} />
                       <Route path="/verify" element={<Verify />} />
                       <Route path="/reset" element={<Reset />} />
+                      <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
                       <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
                       <Route path="/batch-list" element={<RequireAuth><BatchList /></RequireAuth>} />
                       <Route path="/add-rework" element={<RequireAuth><AddRework /></RequireAuth>} />

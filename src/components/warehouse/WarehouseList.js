@@ -4,8 +4,7 @@ import Layout from '../Layout';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button, ButtonGroup, Tabs, Tab, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { fetchRegions } from '../../redux/region/actions/regionAction';
-
+import { fetchStyles } from '../../redux/style/actions/styleAction';
 import { fetchWarehouses, setSelectedWarehouse } from '../../redux/warehouse/actions/warehouseAction';
 
 const WarehouseList = () => {
@@ -15,7 +14,7 @@ const WarehouseList = () => {
     const [loading, setLoading] = useState(false);
     const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedTabWarehouse') || 'All');
     const [filteredRows, setFilteredRows] = useState([]);
-    const regions = useSelector((state) => state.region.regions);
+    const styles = useSelector((state) => state.style.styles);
 
     let key = 0;
 
@@ -49,13 +48,13 @@ const WarehouseList = () => {
     useEffect(() => {
         setLoading(true);
         dispatch(fetchWarehouses());
-        dispatch(fetchRegions());
+        dispatch(fetchStyles());
         setLoading(false);
     }, [dispatch]);
 
     useEffect(() => {
         if (warehouses.length > 0 && warehouses[0].id) {
-            setFilteredRows(selectedTab === 'All' ? warehouses : warehouses.filter((row) => row.region === selectedTab));
+            setFilteredRows(selectedTab === 'All' ? warehouses : warehouses.filter((row) => row.styleName === selectedTab));
             localStorage.setItem('selectedTabWarehouse', selectedTab);
             setLoading(false);
         }
@@ -66,8 +65,8 @@ const WarehouseList = () => {
             <div style={{ height: '100%', width: '100%' }}>
                 <h1>Warehouse List</h1>
                 <Tabs value={selectedTab} onChange={(e, value) => setSelectedTab(value)}>
-                    <Tab label="All Regions" value="All" />
-                    {regions && regions.map((region) => <Tab label={region.name} value={region.name} key={key++} />)}
+                    <Tab label="All Styles" value="All" />
+                    {styles && styles.map((style) => <Tab label={style.name} value={style.name} key={key++} />)}
                 </Tabs>
                 {loading ? <CircularProgress /> : (
                     <DataGrid
