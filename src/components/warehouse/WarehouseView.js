@@ -20,6 +20,7 @@ import { createRework, updateReworkUiCode, cleanUpRework } from '../../redux/rew
 import { fetchZone } from '../../redux/zones/actions/zonesAction';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
+import { fetchComments, createComment } from '../../redux/comment/actions/commentsAction';
 
 const WarehouseView = () => {
     const navigate = useNavigate();
@@ -30,6 +31,8 @@ const WarehouseView = () => {
     const selectedRework = useSelector((state) => state.rework.rework);
     const salesCreated = useSelector((state) => state.sales.created);
     const reworkCreated = useSelector((state) => state.rework.created);
+    const comments = useSelector(state => state.comments.comments);
+    const comment = useSelector(state => state.comments.comment);
     const zone = useSelector((state) => state.zones.zone);
     const [editMode, setEditMode] = useState(false);
     const [warehouse, setWarehouse] = useState({
@@ -54,6 +57,43 @@ const WarehouseView = () => {
             login: '',
         }
     });
+
+
+    const [commentData, setCommentData] = useState({
+        comment: "",
+        status: "WAREHOUSE",
+        zoneId: 0,
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
+        user: {
+            id: localStorage.getItem("userId"),
+        }
+    });
+
+
+    const handleCommentChange = (e) => {
+        setCommentData({
+            ...commentData,
+            comment: e.target.value,
+            zoneId: selectedWarehouse.id,
+        });
+    }
+
+    const handleCommentSubmit = () => {
+        dispatch(createComment(commentData));
+    }
+
+    useEffect(() => {
+        if ((comment.id !== undefined || comment) && (selectedWarehouse && selectedWarehouse.id === comment.zoneId)) {
+            dispatch(fetchComments(selectedWarehouse.id, 'PACKING'));
+            setCommentData({
+                ...commentData,
+                comment: '',
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [comment]);
+
+
 
     const [salesData, setSalesData] = useState({
         id: '',
@@ -708,23 +748,40 @@ const WarehouseView = () => {
                             }
                         }>
                         <h1>Comments</h1>
-                        <Button color='success'>Add Comment</Button>
+                        <TextField
+                            fullWidth
+                            margin='normal'
+                            label='Comment'
+                            variant='outlined'
+                            multiline
+                            rowsMax={4}
+                            onChange={handleCommentChange}
+                        />
+                        <Button
+                            color='success'
+                            onClick={handleCommentSubmit}
+                        >Add Comment</Button>
                         <div style={
                             {
                                 margin: '10px',
                             }
                         }>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
+                            <Divider />
+                            {comments.map((comment) => {
+                                return (
+                                    <div key={comment.id}>
+                                        <Typography variant="body2" margin={1} style={{
+                                            overflow: 'hidden',
+                                            maxWidth: '90%',
+                                        }}>
+                                            <strong>
+                                                {comment.user.firstName} {comment.user.lastName}:
+                                            </strong> <span>{comment.comment}</span>
+                                        </Typography>
+                                        <Divider />
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Paper>
                 </Grid>

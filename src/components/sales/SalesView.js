@@ -15,6 +15,8 @@ import { useDispatch } from 'react-redux';
 import { updateSale } from '../../redux/sales/actions/salesAction';
 import { fetchWarehouse } from '../../redux/warehouse/actions/warehouseAction';
 import { toast } from 'react-toastify';
+import { fetchComments, createComment } from '../../redux/comment/actions/commentsAction';
+import { format } from 'date-fns';
 
 const SalesView = () => {
     const selectedSale = useSelector((state) => state.sales.sale);
@@ -22,6 +24,8 @@ const SalesView = () => {
     const [editMode, setEditMode] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const comments = useSelector(state => state.comments.comments);
+    const comment = useSelector(state => state.comments.comment);
     const [salesData, setSalesData] = useState({
         id: '',
         salesDate: Date.now(),
@@ -42,6 +46,39 @@ const SalesView = () => {
             id: '',
         }
     });
+
+    const [commentData, setCommentData] = useState({
+        comment: "",
+        status: "SALES",
+        zoneId: 0,
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
+        user: {
+            id: localStorage.getItem("userId"),
+        }
+    });
+
+    const handleCommentChange = (e) => {
+        setCommentData({
+            ...commentData,
+            comment: e.target.value,
+            zoneId: selectedSale.id,
+        });
+    }
+
+    const handleCommentSubmit = () => {
+        dispatch(createComment(commentData));
+    }
+
+    useEffect(() => {
+        if ((comment.id !== undefined || comment) && (selectedSale && selectedSale.id === comment.zoneId)) {
+            dispatch(fetchComments(selectedSale.id, 'SALES'));
+            setCommentData({
+                ...commentData,
+                comment: '',
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [comment]);
 
     const handleSalesEdit = () => {
         if (validateRewokData()) {
@@ -376,23 +413,40 @@ const SalesView = () => {
                             }
                         }>
                         <h1>Comments</h1>
-                        <Button color='success'>Add Comment</Button>
+                        <TextField
+                            fullWidth
+                            margin='normal'
+                            label='Comment'
+                            variant='outlined'
+                            multiline
+                            rowsMax={4}
+                            onChange={handleCommentChange}
+                        />
+                        <Button
+                            color='success'
+                            onClick={handleCommentSubmit}
+                        >Add Comment</Button>
                         <div style={
                             {
                                 margin: '10px',
                             }
                         }>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
+                            <Divider />
+                            {comments.map((comment) => {
+                                return (
+                                    <div key={comment.id}>
+                                        <Typography variant="body2" margin={1} style={{
+                                            overflow: 'hidden',
+                                            maxWidth: '90%',
+                                        }}>
+                                            <strong>
+                                                {comment.user.firstName} {comment.user.lastName}:
+                                            </strong> <span>{comment.comment}</span>
+                                        </Typography>
+                                        <Divider />
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Paper>
                 </Grid>

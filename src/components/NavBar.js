@@ -18,12 +18,14 @@ import CssBaseline from '@mui/material/CssBaseline';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MessageIcon from '@mui/icons-material/Message';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useAuth } from '../helpers/auth/AuthProvider';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMenu } from '../helpers/menu/MenuProvider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { AssignmentTurnedIn, Cached, Map, ConfirmationNumber, Archive, Style, Dashboard, MonetizationOn, HomeWork } from '@mui/icons-material';
+import { v4 as uuidv4 } from 'uuid';
 
 const drawerWidth = 240;
 
@@ -118,6 +120,10 @@ const NavBar = () => {
     auth.logout();
   };
 
+  const handleAIquery = () => {
+    const uniqueCode = uuidv4();
+  }
+
   const menuItems1 = [
     { icon: <Dashboard style={{ color: localStorage.getItem("selectedMenu") === '/' ? '#4CAF50' : '' }} />, text: 'Dashboard', to: '/' },
     { icon: <AssignmentTurnedIn style={{ color: localStorage.getItem("selectedMenu") === '/zones-list' ? '#4CAF50' : '' }} />, text: 'Packing Zones', to: '/zones-list' },
@@ -179,6 +185,18 @@ const NavBar = () => {
           </Typography>
           <Box sx={{ ml: 'auto' }}>
             <div>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleAIquery}
+                sx={{
+                  marginRight: 5,
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <MessageIcon />
+              </IconButton>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"

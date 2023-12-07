@@ -15,10 +15,14 @@ import { useDispatch } from 'react-redux';
 import { updateRework } from '../../redux/rework/actions/reworkAction';
 import { fetchWarehouse } from '../../redux/warehouse/actions/warehouseAction';
 import { toast } from 'react-toastify';
+import { format } from 'date-fns';
+import { fetchComments, createComment } from '../../redux/comment/actions/commentsAction';
 
 const ReworkView = () => {
     const selectedRework = useSelector((state) => state.rework.rework);
     const warehouse = useSelector((state) => state.warehouse.warehouse);
+    const comments = useSelector(state => state.comments.comments);
+    const comment = useSelector(state => state.comments.comment);
     const [editMode, setEditMode] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -40,6 +44,43 @@ const ReworkView = () => {
             id: '',
         }
     });
+
+
+    const [commentData, setCommentData] = useState({
+        comment: "",
+        status: "REWORK",
+        zoneId: 0,
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
+        user: {
+            id: localStorage.getItem("userId"),
+        }
+    });
+
+
+    const handleCommentChange = (e) => {
+        setCommentData({
+            ...commentData,
+            comment: e.target.value,
+            zoneId: selectedRework.id,
+        });
+    }
+
+    const handleCommentSubmit = () => {
+        dispatch(createComment(commentData));
+    }
+
+    useEffect(() => {
+        if ((comment.id !== undefined || comment) && (selectedRework && selectedRework.id === comment.zoneId)) {
+            dispatch(fetchComments(selectedRework.id, 'PACKING'));
+            setCommentData({
+                ...commentData,
+                comment: '',
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [comment]);
+
+
 
     const handleReworkEdit = () => {
         if (validateRewokData()) {
@@ -336,23 +377,40 @@ const ReworkView = () => {
                             }
                         }>
                         <h1>Comments</h1>
-                        <Button color='success'>Add Comment</Button>
+                        <TextField
+                            fullWidth
+                            margin='normal'
+                            label='Comment'
+                            variant='outlined'
+                            multiline
+                            rowsMax={4}
+                            onChange={handleCommentChange}
+                        />
+                        <Button
+                            color='success'
+                            onClick={handleCommentSubmit}
+                        >Add Comment</Button>
                         <div style={
                             {
                                 margin: '10px',
                             }
                         }>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
-                            <Divider></Divider>
-                            <Typography variant="body2">
-                                test
-                            </Typography>
+                            <Divider />
+                            {comments.map((comment) => {
+                                return (
+                                    <div key={comment.id}>
+                                        <Typography variant="body2" margin={1} style={{
+                                            overflow: 'hidden',
+                                            maxWidth: '90%',
+                                        }}>
+                                            <strong>
+                                                {comment.user.firstName} {comment.user.lastName}:
+                                            </strong> <span>{comment.comment}</span>
+                                        </Typography>
+                                        <Divider />
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Paper>
                 </Grid>
