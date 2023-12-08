@@ -103,7 +103,7 @@ const WarehouseView = () => {
         startCTNNumber: '',
         endCTNNumber: '',
         uicode: '',
-        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
         warehouseDetail: {
             id: '',
         },
@@ -127,7 +127,7 @@ const WarehouseView = () => {
         startCTNNumber: '',
         endCTNNumber: '',
         status: 'PENDING',
-        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
         warehouseDetail: {
             id: '',
         },
