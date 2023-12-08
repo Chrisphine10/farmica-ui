@@ -55,7 +55,8 @@ const WarehouseView = () => {
         user: {
             id: '',
             login: '',
-        }
+        },
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx"),
     });
 
 
