@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CardContent, Typography, FormControl, Select, MenuItem, InputLabel, Button, Grid, Paper, Divider, Tabs, Tab } from '@mui/material';
+import { CardContent, Typography, FormControl, Select, MenuItem, InputLabel, ButtonGroup, Button, Grid, Paper, Divider, Tabs, Tab } from '@mui/material';
 import { fetchReport, generateReport, fetchStyleReport, fetchReportByMonthAndYear, fetchStyleReportByMonthAndYear, cleanUpReport } from '../../redux/report/actions/reportActions';
 import { useDispatch, useSelector } from "react-redux";
 import Layout from '../Layout';
@@ -115,6 +115,11 @@ const Dashboard = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [styleReportData]);
 
+    const reload = () => {
+        setLoading(false);
+        dispatch(fetchReport());
+        dispatch(fetchStyleReport());
+    }
 
     return (
         <Layout>
@@ -132,12 +137,9 @@ const Dashboard = () => {
                         </Tabs>
                         {selectedTab === 'Live_Report' &&
                             <>
-                                <Button variant="outlined" onClick={() => {
-                                    dispatch(generateReport())
-                                    setTimeout(() => {
-                                        dispatch(fetchReport());
-                                    }, 1000);
-                                }}>Generate Report</Button>
+                                <ButtonGroup variant="outlined" aria-label="outlined primary button group">
+                                    <Button color='error' onClick={reload}>Reload Live Report</Button>
+                                </ButtonGroup>
                                 <Grid container spacing={3} paddingTop={3}>
 
                                     <Grid item xs={12} sm={6} md={3}>
@@ -354,6 +356,12 @@ const Dashboard = () => {
                             </>}
                         {selectedTab === 'Monthly_Report' &&
                             <>
+                                <Button variant="outlined" onClick={() => {
+                                    dispatch(generateReport())
+                                    setTimeout(() => {
+                                        dispatch(fetchReport());
+                                    }, 1000);
+                                }}>Generate Report</Button>
                                 <Grid container spacing={3}>
                                     <Grid item xs={3} sm={3} md={3}>
                                         <FormControl fullWidth margin="normal">
