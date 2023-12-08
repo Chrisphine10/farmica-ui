@@ -12,7 +12,14 @@ export const createSale = (sale, warehouse, zone) => async (dispatch) => {
             numberOfCTNs: warehouse.numberOfCTNs - sale.numberOfCTNs,
         };
         const warehouseResponse = await baseAPI2.patch(`/warehouse-details/${warehouse.id}`, newWarehouse);
-        const zoneResponse = await baseAPI2.put(`/packing-zone-details/${zone.id}`, zone);
+        //update package zone details number of ctns
+        let numberOfCTNsSold = zone.numberOfCTNsSold !== null ? parseInt(zone.numberOfCTNsSold) + parseInt(sale.numberOfCTNs) : sale.numberOfCTNs;
+        const newZone = {
+            ...zone,
+            numberOfCTNsSold: numberOfCTNsSold,
+        };
+        console.log(zone)
+        const zoneResponse = await baseAPI.put(`/packing-zone-details/${zone.id}`, newZone);
         if (response.status === 201 && warehouseResponse.status === 200 && zoneResponse.status === 200) {
             toast.success('Sale created successfully!');
             dispatch({

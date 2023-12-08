@@ -44,7 +44,8 @@ const AddZone = () => {
         user: {
             id: localStorage.getItem('userId'),
             login: localStorage.getItem('login'),
-        }
+        },
+        createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSx")
     });
     const { id } = useParams();
     const zoneDetails = useSelector(state => state.zones.zone);

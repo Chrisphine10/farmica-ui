@@ -215,8 +215,9 @@ const WarehouseView = () => {
 
     useEffect(() => {
         if (reworkCreated && reworkData.numberOfCTNs !== '') {
+            console.log("selectedRework: ", selectedRework);
             selectedRework.uicode = selectedWarehouse.uicode + '-R' + selectedRework.id;
-            dispatch(updateReworkUiCode(reworkData));
+            dispatch(updateReworkUiCode(selectedRework));
             dispatch(cleanUpRework());
             dispatch(fetchWarehouse(selectedWarehouse.id));
         }
@@ -250,8 +251,6 @@ const WarehouseView = () => {
 
     const handleSales = () => {
         delete salesData.id;
-        zone.numberOfCTNsSold = zone.numberOfCTNsSold + salesData.numberOfCTNs;
-        console.log("warehouse.numberOfCTNs: ", warehouse.numberOfCTNs);
         if (validateSales()) {
             dispatch(createSale(salesData, warehouse, zone));
             setWarehouse({
@@ -263,7 +262,7 @@ const WarehouseView = () => {
     }
 
     const handleRework = () => {
-        zone.numberOfCTNsReworked = zone.numberOfCTNsReworked + reworkData.numberOfCTNs;
+        delete reworkData.id;
         if (validateRework()) {
             dispatch(createRework(reworkData, warehouse, zone));
             setWarehouse({

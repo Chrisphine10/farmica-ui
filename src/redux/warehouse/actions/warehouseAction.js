@@ -7,10 +7,14 @@ export const createWarehouse = (warehouse, zone) => async (dispatch) => {
     try {
         const response = await baseAPI2.post('/warehouse-details', warehouse);
         // update package zone details number of ctns
+        let numberOfCTNsInWarehouse = zone.numberOfCTNsInWarehouse !== null ? parseInt(zone.numberOfCTNsInWarehouse) + parseInt(warehouse.numberOfCTNs) : warehouse.numberOfCTNs;
+        let numberOfCTNs = zone.numberOfCTNs - warehouse.numberOfCTNs;
         const newZone = {
             ...zone,
-            numberOfCTNs: zone.numberOfCTNs - warehouse.numberOfCTNs,
+            numberOfCTNs: numberOfCTNs,
+            numberOfCTNsInWarehouse: numberOfCTNsInWarehouse,
         };
+        console.log(zone)
         const zoneResponse = await baseAPI.put(`/packing-zone-details/${zone.id}`, newZone);
         if (response.status === 201 && zoneResponse.status === 200) {
             toast.success('Warehouse created!');
