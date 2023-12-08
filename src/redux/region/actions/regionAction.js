@@ -52,7 +52,7 @@ export const createRegion = (data) => async (dispatch) => {
     try {
         console.log(data);
         const response = await baseAPI.post("/regions", data);
-        if (response.status === 200) {
+        if (response.status === 201) {
             toast.success('Region created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_REGION,
