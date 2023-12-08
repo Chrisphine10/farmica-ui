@@ -76,6 +76,9 @@ const ZoneList = () => {
         }
     }, [selectedTab, zonesList]);
 
+    const reload = () => {
+        dispatch(fetchZones());
+    }
 
 
     return (
@@ -85,6 +88,7 @@ const ZoneList = () => {
                 <div style={{ marginBottom: 20 }}>
                     <ButtonGroup variant="outlined" aria-label="outlined primary button group">
                         <Button color='success' href="/add-zone">Add Item </Button>
+                        <Button color='error' onClick={reload}>Reload</Button>
                     </ButtonGroup>
                 </div>
                 {!loading ? [<div style={{ marginBottom: 1 }}>
@@ -139,7 +143,7 @@ const ZoneList = () => {
                         />
                     </div>}
             </div>
-        </Layout>
+        </Layout >
     );
 };
 

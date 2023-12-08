@@ -108,10 +108,10 @@ const AddZone = () => {
     }, [zoneUpdated]);
 
     useEffect(() => {
-        zone.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zone.id;
+        zoneDetails.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zoneDetails.id;
         if (zoneCreated) {
             // dispatch(cleanUp());
-            dispatch(updateZone(zone, false));
+            dispatch(updateZone(zoneDetails, false));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [zoneCreated]);
@@ -300,6 +300,7 @@ const AddZone = () => {
                                                 if (batchData.id !== '') {
                                                     console.log("batchData", batchData);
                                                     dispatch(fetchLotsByBatch(batchData.id));
+                                                    dispatch(fetchBatch(batchData.id));
                                                     setCurrentPage('LOT')
                                                 } else {
                                                     toast.error('Please select a batch!');
