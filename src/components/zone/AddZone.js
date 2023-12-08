@@ -180,18 +180,19 @@ const AddZone = () => {
     }, [batch]);
 
     const handleChange = (e) => {
-        // add receivedCTNs from numberOfCTNs
-        if (e.target.name === 'numberOfCTNs') {
-            setZone({
-                ...zone,
-                receivedCTNs: e.target.value,
-            });
-        }
         setZone({
             ...zone,
             [e.target.name]: e.target.value,
         });
     };
+
+    const handleNumberOfCTNs = (value) => {
+        setZone({
+            ...zone,
+            numberOfCTNs: value,
+            receivedCTNs: value,
+        });
+    }
 
     const handleLotChange = (e) => {
         setLotData({ ...lotData, [e.target.name]: e.target.value });
@@ -202,6 +203,7 @@ const AddZone = () => {
     };
 
     const handleSubmit = () => {
+        console.log("zone", zone);
         if (validateZone()) {
             dispatch(createZone(zone));
         }
@@ -223,6 +225,8 @@ const AddZone = () => {
     };
 
     const handleUpdate = () => {
+        delete zone.receivedCTNs;
+        zone.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zoneDetails.id;
         if (validateZone()) {
             dispatch(updateZone(zone, true));
         }
@@ -517,7 +521,7 @@ const AddZone = () => {
                                 name="numberOfCTNs"
                                 type="number"
                                 value={zone.numberOfCTNs}
-                                onChange={handleChange}
+                                onChange={(e) => handleNumberOfCTNs(e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={6}>

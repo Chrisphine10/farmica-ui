@@ -86,7 +86,7 @@ export const fetchReworksByUiCode = (uiCode) => async (dispatch) => {
     }
 }
 
-export const createRework = (data, warehouse) => async (dispatch) => {
+export const createRework = (data, warehouse, zone) => async (dispatch) => {
     try {
         const response = await baseAPI2.post("/rework-details", data);
         // update warehouse
@@ -95,7 +95,8 @@ export const createRework = (data, warehouse) => async (dispatch) => {
             numberOfCTNs: warehouse.numberOfCTNs - data.numberOfCTNs,
         };
         const warehouseResponse = await baseAPI2.put(`/warehouse-details/${warehouse.id}`, newWarehouse);
-        if (response.status === 201 && warehouseResponse.status === 200) {
+        const zoneResponse = await baseAPI2.put(`/packing-zone-details/${zone.id}`, zone);
+        if (response.status === 201 && warehouseResponse.status === 200 && zoneResponse.status === 200) {
             toast.success('Rework created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_REWORK,

@@ -250,9 +250,10 @@ const WarehouseView = () => {
 
     const handleSales = () => {
         delete salesData.id;
+        zone.numberOfCTNsSold = zone.numberOfCTNsSold + salesData.numberOfCTNs;
         console.log("warehouse.numberOfCTNs: ", warehouse.numberOfCTNs);
         if (validateSales()) {
-            dispatch(createSale(salesData, warehouse));
+            dispatch(createSale(salesData, warehouse, zone));
             setWarehouse({
                 ...warehouse,
                 numberOfCTNs: warehouse.numberOfCTNs - salesData.numberOfCTNs,
@@ -262,8 +263,9 @@ const WarehouseView = () => {
     }
 
     const handleRework = () => {
+        zone.numberOfCTNsReworked = zone.numberOfCTNsReworked + reworkData.numberOfCTNs;
         if (validateRework()) {
-            dispatch(createRework(reworkData, warehouse));
+            dispatch(createRework(reworkData, warehouse, zone));
             setWarehouse({
                 ...warehouse,
                 numberOfCTNs: warehouse.numberOfCTNs - reworkData.numberOfCTNs,

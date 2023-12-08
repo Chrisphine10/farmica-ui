@@ -3,7 +3,7 @@ import baseAPI from '../../baseAPI';
 import { ActionTypes } from "../type";
 import { toast } from 'react-toastify';
 
-export const createSale = (sale, warehouse) => async (dispatch) => {
+export const createSale = (sale, warehouse, zone) => async (dispatch) => {
     try {
         const response = await baseAPI2.post('/sales-details', sale);
         // update warehouse
@@ -12,7 +12,8 @@ export const createSale = (sale, warehouse) => async (dispatch) => {
             numberOfCTNs: warehouse.numberOfCTNs - sale.numberOfCTNs,
         };
         const warehouseResponse = await baseAPI2.patch(`/warehouse-details/${warehouse.id}`, newWarehouse);
-        if (response.status === 201 && warehouseResponse.status === 200) {
+        const zoneResponse = await baseAPI2.put(`/packing-zone-details/${zone.id}`, zone);
+        if (response.status === 201 && warehouseResponse.status === 200 && zoneResponse.status === 200) {
             toast.success('Sale created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_SALE,
