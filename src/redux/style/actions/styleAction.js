@@ -50,7 +50,7 @@ export const fetchStyle = (id) => async (dispatch) => {
 export const createStyle = (data) => async (dispatch) => {
     try {
         const response = await baseAPI.post("/styles", data);
-        if (response.status === 200) {
+        if (response.status === 201) {
             toast.success('Style created successfully!');
             dispatch({
                 type: ActionTypes.CREATE_STYLE,
@@ -58,7 +58,6 @@ export const createStyle = (data) => async (dispatch) => {
             });
         } else {
             toast.error('Failed to create style!');
-
             dispatch({
                 type: ActionTypes.ERROR,
                 payload: response.data,

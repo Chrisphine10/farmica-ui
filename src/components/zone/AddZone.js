@@ -191,6 +191,7 @@ const AddZone = () => {
             ...zone,
             numberOfCTNs: value,
             receivedCTNs: value,
+            numberOfCTNsPacked: value,
         });
     }
 
@@ -225,7 +226,8 @@ const AddZone = () => {
     };
 
     const handleUpdate = () => {
-        delete zone.receivedCTNs;
+        console.log(lot)
+        // delete zone.receivedCTNs;
         zone.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zoneDetails.id;
         if (validateZone()) {
             dispatch(updateZone(zone, true));
