@@ -108,10 +108,10 @@ const AddZone = () => {
     }, [zoneUpdated]);
 
     useEffect(() => {
-        zoneDetails.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zoneDetails.id;
+        zone.uicode = batch.batchNo + '-L' + lot.lotNo + '-Z' + zone.id;
         if (zoneCreated) {
             // dispatch(cleanUp());
-            dispatch(updateZone(zoneDetails, false));
+            dispatch(updateZone(zone, false));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [zoneCreated]);
