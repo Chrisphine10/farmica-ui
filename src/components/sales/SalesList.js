@@ -1,22 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Layout from '../Layout';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Button, ButtonGroup, Tabs, Tab, CircularProgress } from '@mui/material';
+import { Button, ButtonGroup, Tabs, Tab, CircularProgress, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { fetchStyles } from '../../redux/style/actions/styleAction';
 import { fetchSales, setSelectedSale } from '../../redux/sales/actions/salesAction';
+import QRCode from 'react-qr-code';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import ReactToPrint from 'react-to-print';
 
 const SalesList = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const sales = useSelector((state) => state.sales.sales);
+    const selectedRow = useSelector(state => state.sales.sale);
     const [loading, setLoading] = useState(false);
     const [selectedTab, setSelectedTab] = useState(localStorage.getItem('selectedTabSales') || 'All');
     const [filteredRows, setFilteredRows] = useState([]);
     const styles = useSelector((state) => state.style.styles);
+    const [open, setOpen] = useState(false);
 
     let key = 0;
+    const printRef = useRef(null);
+
+    const handlePrint = () => {
+        setOpen(true)
+    };
 
     const columns = [
         { field: 'id', headerName: 'ID', flex: 0.5 },
@@ -39,6 +53,10 @@ const SalesList = () => {
                             dispatch(setSelectedSale(sales.find((sale) => sale.id === params.row.id)));
                             navigate('/view-sales');
                         }}>View</Button>
+                        <Button color='error' onClick={async () => {
+                            dispatch(setSelectedSale(sales.find((sale) => sale.id === params.row.id)));
+                            handlePrint();
+                        }} >Print</Button>
                     </ButtonGroup>
                 </strong>
             ),
@@ -64,6 +82,61 @@ const SalesList = () => {
         <Layout>
             <div style={{ height: '100%', width: '100%' }}>
                 <h1>Sales List</h1>
+                <Dialog open={open} onClose={() => {
+                    setOpen(false);
+                }} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Packing Details: {selectedRow.id}</DialogTitle>
+                    <DialogContent ref={printRef}>
+                        <DialogContentText>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                border: '1px solid #000',
+                                padding: '10px',
+                                backgroundColor: '#fff',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                maxWidth: '600px', // Limit the maximum width for better readability
+                            }}>
+
+                                {/* QR code on the right */}
+                                <div style={{ marginRight: '10px' }}>
+                                    <QRCode value={"http://localhost:3000/qr-code/" + selectedRow.uicode} style={{
+                                        height: '100px',
+                                        width: '100px',
+                                    }} />
+                                </div>
+
+                                {/* Descriptions on the left */}
+                                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                    <Typography><strong>Style:</strong> {selectedRow.styleName}</Typography>
+                                    <Typography><strong>Number of CTNs:</strong> {selectedRow.numberOfCTNs}</Typography>
+                                    <Typography><strong>Lot Number:</strong> {selectedRow.lotNumber}</Typography>
+                                    <Typography><strong>Batch Number:</strong> {selectedRow.batchNumber}</Typography>
+                                    <Typography><strong>Package Date:</strong> {selectedRow.salesDate}</Typography>
+                                </div>
+                            </div>
+
+
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {
+                            setOpen(false);
+                        }} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={() => {
+                            setOpen(false);
+                        }} color="primary">
+
+                            <ReactToPrint
+                                trigger={() => <Button>Print Sticker</Button>}
+                                content={() => printRef.current}
+                            />
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 {loading ? <CircularProgress
                     size={24}
                     sx={{

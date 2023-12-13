@@ -145,7 +145,7 @@ const Dashboard = () => {
                                     <Grid item xs={12} sm={6} md={3}>
                                         <Paper elevation={3}>
                                             <CardContent>
-                                                <Typography variant="h6"><strong>Total Items in Packing Zone</strong></Typography>
+                                                <Typography variant="h6"><strong>Total CTNs in Packing Zone</strong></Typography>
                                                 <Typography variant="h4">{reportData.totalItemsInPacking}</Typography>
                                             </CardContent>
                                         </Paper>
@@ -155,7 +155,7 @@ const Dashboard = () => {
                                     <Grid item xs={12} sm={6} md={3}>
                                         <Paper elevation={3}>
                                             <CardContent>
-                                                <Typography variant="h6"><strong>Total Items in Warehouse</strong></Typography>
+                                                <Typography variant="h6"><strong>Total CTNs in Warehouse</strong></Typography>
                                                 <Typography variant="h4">{reportData.totalItemsInWarehouse}</Typography>
                                             </CardContent>
                                         </Paper>
@@ -165,7 +165,7 @@ const Dashboard = () => {
                                     <Grid item xs={12} sm={6} md={3}>
                                         <Paper elevation={3}>
                                             <CardContent>
-                                                <Typography variant="h6"><strong>Total Items in Sales</strong></Typography>
+                                                <Typography variant="h6"><strong>Total CTNs in Sales</strong></Typography>
                                                 <Typography variant="h4">{reportData.totalItemsInSales}</Typography>
                                             </CardContent>
                                         </Paper>
@@ -175,7 +175,7 @@ const Dashboard = () => {
                                     <Grid item xs={12} sm={6} md={3}>
                                         <Paper elevation={3}>
                                             <CardContent>
-                                                <Typography variant="h6"><strong>Total Items in Rework</strong></Typography>
+                                                <Typography variant="h6"><strong>Total CTNs in Rework</strong></Typography>
                                                 <Typography variant="h4">{reportData.totalItemsInRework}</Typography>
                                             </CardContent>
                                         </Paper>
@@ -274,7 +274,6 @@ const Dashboard = () => {
                                                     }}
                                                 >Live Style Stacking Graph</h2>
                                                 <BarChart
-
                                                     colors={
                                                         ['#1976d2', '#dc004e', '#ffc107', '#3f51b5', '#4caf50', '#ff4081', '#f50057', '#ff6e40', '#ff3d00', '#00e676', '#00b0ff', '#ff9100', '#00c853', '#6200ea', '#00b8d4', '#ffab00', '#304ffe', '#0091ea', '#ff6d00', '#00bfa5', '#d50000', '#aeea00', '#2962ff', '#00bfa5', '#ff3d00', '#00c853', '#6200ea', '#00b8d4', '#ffab00', '#304ffe', '#0091ea', '#ff6d00', '#00bfa5', '#d50000', '#aeea00', '#2962ff', '#00bfa5', '#ff3d00', '#00c853', '#6200ea', '#00b8d4', '#ffab00', '#304ffe', '#0091ea', '#ff6d00', '#00bfa5', '#d50000', '#aeea00', '#2962ff', '#00bfa5', '#ff3d00', '#00c853', '#6200ea', '#00b8d4', '#ffab00', '#304ffe', '#0091ea', '#ff6d00', '#00bfa5', '#d50000', '#aeea00', '#2962ff', '#00bfa5', '#ff3d00', '#00c853', '#6200ea', '#00b8d4', '#ffab00', '#304ffe', '#0091ea', '#ff6d00', '#00bfa5', '#d50000', '#aeea00', '#2962ff', '#00bfa5']
                                                     }
@@ -282,24 +281,27 @@ const Dashboard = () => {
                                                         {
                                                             scaleType: 'band',
                                                             data: ['rework', 'warehouse', 'sales', 'packingZone'],
+                                                            label: 'Section',
                                                         },
                                                     ]}
                                                     series={[
                                                         ...styleReportData.map((styleReport) => ({
                                                             stack: 'A',
                                                             label: styleReport.style.name,
-                                                            data: [transformedStyleReportData['rework']
-                                                                .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                .map((styles) => (styles.numberOfCTNs)),
-                                                            transformedStyleReportData['warehouse']
-                                                                .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                .map((styles) => (styles.numberOfCTNs)),
-                                                            transformedStyleReportData['sales']
-                                                                .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                .map((styles) => (styles.numberOfCTNs)),
-                                                            transformedStyleReportData['packingZone']
-                                                                .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                .map((styles) => (styles.numberOfCTNs))]
+                                                            data: [
+                                                                transformedStyleReportData['packingZone']
+                                                                    .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                    .map((styles) => (styles.numberOfCTNs)),
+                                                                transformedStyleReportData['warehouse']
+                                                                    .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                    .map((styles) => (styles.numberOfCTNs)),
+                                                                transformedStyleReportData['sales']
+                                                                    .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                    .map((styles) => (styles.numberOfCTNs)),
+                                                                transformedStyleReportData['rework']
+                                                                    .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                    .map((styles) => (styles.numberOfCTNs))
+                                                            ]
                                                         })),
                                                     ]}
                                                     yAxis={
@@ -338,13 +340,13 @@ const Dashboard = () => {
                                                             label: 'Number of CTNs',
                                                         }]
                                                     }
-                                                    series={[{
-                                                        data: styleReportData.map((styleReport) => styleReport.totalStyleInRework), type: 'bar', name: 'Rework', label: 'Rework',
-                                                    },
-                                                    { data: styleReportData.map((styleReport) => styleReport.totalStyleInPacking), type: 'bar', name: 'Packing', label: 'Packing' },
-                                                    { data: styleReportData.map((styleReport) => styleReport.totalStyleInSales), type: 'bar', name: 'Sales', label: 'Sales' },
-                                                    { data: styleReportData.map((styleReport) => styleReport.totalStyleInWarehouse), type: 'bar', name: 'Warehouse', label: 'Warehouse' },
-                                                    { data: styleReportData.map((styleReport) => styleReport.totalStyle), type: 'bar', name: 'Total', label: 'Total' }
+                                                    series={[
+                                                        { data: styleReportData.map((styleReport) => styleReport.totalStyleInPacking), type: 'bar', name: 'Packing', label: 'Packing' },
+                                                        { data: styleReportData.map((styleReport) => styleReport.totalStyleInWarehouse), type: 'bar', name: 'Warehouse', label: 'Warehouse' },
+                                                        { data: styleReportData.map((styleReport) => styleReport.totalStyleInSales), type: 'bar', name: 'Sales', label: 'Sales' }, {
+                                                            data: styleReportData.map((styleReport) => styleReport.totalStyleInRework), type: 'bar', name: 'Rework', label: 'Rework',
+                                                        },
+                                                        // { data: styleReportData.map((styleReport) => styleReport.totalStyle), type: 'bar', name: 'Total', label: 'Total' }
                                                     ]}
                                                     height={400}
                                                 />
@@ -404,7 +406,7 @@ const Dashboard = () => {
                                             <Grid item xs={12} sm={6} md={3}>
                                                 <Paper elevation={3}>
                                                     <CardContent>
-                                                        <Typography variant="h6"><strong>Total Items in Packing Zone</strong></Typography>
+                                                        <Typography variant="h6"><strong>Total CTNs in Packing Zone</strong></Typography>
                                                         <Typography variant="h4">{historyReport.totalItemsInPacking}</Typography>
                                                     </CardContent>
                                                 </Paper>
@@ -414,7 +416,7 @@ const Dashboard = () => {
                                             <Grid item xs={12} sm={6} md={3}>
                                                 <Paper elevation={3}>
                                                     <CardContent>
-                                                        <Typography variant="h6"><strong>Total Items in Warehouse</strong></Typography>
+                                                        <Typography variant="h6"><strong>Total CTNs in Warehouse</strong></Typography>
                                                         <Typography variant="h4">{historyReport.totalItemsInWarehouse}</Typography>
                                                     </CardContent>
                                                 </Paper>
@@ -424,7 +426,7 @@ const Dashboard = () => {
                                             <Grid item xs={12} sm={6} md={3}>
                                                 <Paper elevation={3}>
                                                     <CardContent>
-                                                        <Typography variant="h6"><strong>Total Items in Sales</strong></Typography>
+                                                        <Typography variant="h6"><strong>Total CTNs in Sales</strong></Typography>
                                                         <Typography variant="h4">{historyReport.totalItemsInSales}</Typography>
                                                     </CardContent>
                                                 </Paper>
@@ -434,7 +436,7 @@ const Dashboard = () => {
                                             <Grid item xs={12} sm={6} md={3}>
                                                 <Paper elevation={3}>
                                                     <CardContent>
-                                                        <Typography variant="h6"><strong>Total Items in Rework</strong></Typography>
+                                                        <Typography variant="h6"><strong>Total CTNs in Rework</strong></Typography>
                                                         <Typography variant="h4">{historyReport.totalItemsInRework}</Typography>
                                                     </CardContent>
                                                 </Paper>
@@ -476,8 +478,8 @@ const Dashboard = () => {
                                                                         />
                                                                         <Typography><strong>Total:</strong> {styleReport.totalStyle}</Typography>
                                                                         <Typography><strong>Packing:</strong> {styleReport.totalStyleInPacking}</Typography>
-                                                                        <Typography><strong>Sales:</strong> {styleReport.totalStyleInSales}</Typography>
                                                                         <Typography><strong>Warehouse:</strong> {styleReport.totalStyleInWarehouse}</Typography>
+                                                                        <Typography><strong>Sales:</strong> {styleReport.totalStyleInSales}</Typography>
                                                                         <Typography><strong>Rework:</strong> {styleReport.totalStyleInRework}</Typography>
                                                                     </CardContent>
                                                                 </Paper>
@@ -547,18 +549,20 @@ const Dashboard = () => {
                                                                 ...historyStyleReport.map((styleReport) => ({
                                                                     stack: 'A',
                                                                     label: styleReport.style.name,
-                                                                    data: [transformedStyleReport['rework']
-                                                                        .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                        .map((styles) => (styles.numberOfCTNs)),
-                                                                    transformedStyleReport['warehouse']
-                                                                        .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                        .map((styles) => (styles.numberOfCTNs)),
-                                                                    transformedStyleReport['sales']
-                                                                        .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                        .map((styles) => (styles.numberOfCTNs)),
-                                                                    transformedStyleReport['packingZone']
-                                                                        .filter((styles) => styles.style.id === styleReport.style.id)
-                                                                        .map((styles) => (styles.numberOfCTNs))]
+                                                                    data: [
+                                                                        transformedStyleReport['packingZone']
+                                                                            .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                            .map((styles) => (styles.numberOfCTNs)),
+                                                                        transformedStyleReport['warehouse']
+                                                                            .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                            .map((styles) => (styles.numberOfCTNs)),
+                                                                        transformedStyleReport['sales']
+                                                                            .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                            .map((styles) => (styles.numberOfCTNs)),
+                                                                        transformedStyleReport['rework']
+                                                                            .filter((styles) => styles.style.id === styleReport.style.id)
+                                                                            .map((styles) => (styles.numberOfCTNs))
+                                                                    ]
                                                                 })),
                                                             ]}
                                                             yAxis={
@@ -597,13 +601,14 @@ const Dashboard = () => {
                                                                     label: 'Number of CTNs',
                                                                 }]
                                                             }
-                                                            series={[{
-                                                                data: historyStyleReport.map((styleReport) => styleReport.totalStyleInRework), type: 'bar', name: 'Rework', label: 'Rework',
-                                                            },
-                                                            { data: historyStyleReport.map((styleReport) => styleReport.totalStyleInPacking), type: 'bar', name: 'Packing', label: 'Packing' },
-                                                            { data: historyStyleReport.map((styleReport) => styleReport.totalStyleInSales), type: 'bar', name: 'Sales', label: 'Sales' },
-                                                            { data: historyStyleReport.map((styleReport) => styleReport.totalStyleInWarehouse), type: 'bar', name: 'Warehouse', label: 'Warehouse' },
-                                                            { data: historyStyleReport.map((styleReport) => styleReport.totalStyle), type: 'bar', name: 'Total', label: 'Total' }
+                                                            series={[
+                                                                { data: historyStyleReport.map((styleReport) => styleReport.totalStyleInPacking), type: 'bar', name: 'Packing', label: 'Packing' },
+                                                                { data: historyStyleReport.map((styleReport) => styleReport.totalStyleInWarehouse), type: 'bar', name: 'Warehouse', label: 'Warehouse' },
+                                                                {
+                                                                    data: historyStyleReport.map((styleReport) => styleReport.totalStyleInRework), type: 'bar', name: 'Rework', label: 'Rework',
+                                                                },
+                                                                { data: historyStyleReport.map((styleReport) => styleReport.totalStyleInSales), type: 'bar', name: 'Sales', label: 'Sales' },
+                                                                // { data: historyStyleReport.map((styleReport) => styleReport.totalStyle), type: 'bar', name: 'Total', label: 'Total' }
                                                             ]}
                                                             height={400}
                                                         />

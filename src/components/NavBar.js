@@ -238,6 +238,8 @@ const NavBar = () => {
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent"
+        onMouseEnter={handleDrawerOpen}
+        onMouseLeave={handleDrawerClose}
         sx={{
           marginRight: isMobile ? 0 : 3,
           display: isMobile && !open ? 'none' : 'block',

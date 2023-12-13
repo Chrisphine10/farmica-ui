@@ -17,7 +17,6 @@ import { fetchZone } from '../../redux/zones/actions/zonesAction';
 import { useDispatch } from 'react-redux';
 import { format } from 'date-fns';
 import { fetchComments, createComment } from '../../redux/comment/actions/commentsAction';
-import QRCode from 'react-qr-code';
 
 const ZoneView = () => {
     const zone = useSelector(state => state.zones.zone);
@@ -384,8 +383,7 @@ const ZoneView = () => {
                             margin: 'auto',
                             maxWidth: '700px',
                         }
-                    } > <h1>QR Code</h1>
-                        <QRCode value={'http://54.175.184.10:3000/qr-code/' + zone.uicode} />
+                    } >
                     </Paper>
                     }
                     <Paper sx={

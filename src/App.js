@@ -71,7 +71,7 @@ function App() {
                       <Route path="/warehouse-list" element={<RequireAuth><WarehouseList /></RequireAuth>} />
                       <Route path="/view-warehouse" element={<RequireAuth><WarehouseView /></RequireAuth>} />
                       <Route path="/sales-list" element={<RequireAuth><SalesList /></RequireAuth>} />
-                      <Route path="/view-sales" element={<RequireAuth><SalesView /></RequireAuth>} />
+                      <Route path="/view-sales" element={<SalesView />} />
                       <Route path="/view-style" element={<RequireAuth><StylesView /></RequireAuth>} />
                       <Route path="/view-batch" element={<RequireAuth><BatchView /></RequireAuth>} />
                       <Route path="/qr-code/:id" element={<QrCodeRedirect />} />
