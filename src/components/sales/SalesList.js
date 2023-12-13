@@ -101,7 +101,7 @@ const SalesList = () => {
 
                                 {/* QR code on the right */}
                                 <div style={{ marginRight: '10px' }}>
-                                    <QRCode value={"http://localhost:3000/qr-code/" + selectedRow.uicode} style={{
+                                    <QRCode value={"http://54.175.184.10:3000/qr-code/" + selectedRow.uicode} style={{
                                         height: '100px',
                                         width: '100px',
                                     }} />
