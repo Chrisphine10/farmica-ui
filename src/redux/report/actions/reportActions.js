@@ -83,7 +83,6 @@ export const updateZoneData = () => async (dispatch) => {
         }
     } catch (error) {
         toast.error("Zone data update failed");
-
     }
 }
 
