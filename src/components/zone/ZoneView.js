@@ -31,10 +31,10 @@ const ZoneView = () => {
     const [warehouse, setWarehouse] = useState({
         id: '',
         warehouseDate: format(new Date(), "yyyy-MM-dd"),
-        numberOfCTNs: '',
-        receivedCTNs: '',
-        startCTNNumber: '',
-        endCTNNumber: '',
+        numberOfCTNs: -1,
+        receivedCTNs: -1,
+        startCTNNumber: -1,
+        endCTNNumber: -1,
         uicode: '',
         packingZoneDetail: {
             id: '',
@@ -110,7 +110,7 @@ const ZoneView = () => {
     }
 
     const validateWarehouse = () => {
-        if (warehouse.numberOfCTNs === '' || warehouse.startCTNNumber === '' || warehouse.endCTNNumber === '') {
+        if (warehouse.numberOfCTNs === -1 || warehouse.startCTNNumber === -1 || warehouse.endCTNNumber === -1) {
             toast.error('Please fill all the fields!');
             return false;
         } else if (warehouse.numberOfCTNs > zone.numberOfCTNs) {
@@ -119,9 +119,9 @@ const ZoneView = () => {
         } else if (warehouse.startCTNNumber < zone.startCTNNumber || warehouse.endCTNNumber > zone.endCTNNumber) {
             toast.error('Start CTN Number and End CTN Number should be in the range of the zone!');
             return false;
-            // } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
-            //     toast.error('Start CTN Number cannot be greater than End CTN Number!');
-            //     return false;
+        } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
+            toast.error('Start CTN Number cannot be greater than End CTN Number!');
+            return false;
         } else {
             return true;
         }
