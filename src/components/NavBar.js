@@ -135,22 +135,24 @@ const NavBar = () => {
 
 
   const menuItems1 = [
-    { icon: <Dashboard style={{ color: localStorage.getItem("selectedMenu") === '/' ? '#4CAF50' : '' }} />, text: 'Dashboard', to: '/' },
-    { icon: <AssignmentTurnedIn style={{ color: localStorage.getItem("selectedMenu") === '/zones-list' ? '#4CAF50' : '' }} />, text: 'Packing Zones', to: '/zones-list' },
-    { icon: <HomeWork style={{ color: localStorage.getItem("selectedMenu") === '/warehouse-list' ? '#4CAF50' : '' }} />, text: 'Warehouses', to: '/warehouse-list' },
-    { icon: <Cached style={{ color: localStorage.getItem("selectedMenu") === '/rework-list' ? '#4CAF50' : '' }} />, text: 'Reworks', to: '/rework-list' },
-    { icon: <MonetizationOn style={{ color: localStorage.getItem("selectedMenu") === '/sales-list' ? '#4CAF50' : '' }} />, text: 'Sales', to: '/sales-list' },
+    { icon: <Dashboard style={{ color: localStorage.getItem("selectedMenu") === '/' ? '#4CAF50' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/' ? '#4CAF50' : '' }}>Dashboard</div>, to: '/' },
+    { icon: <AssignmentTurnedIn style={{ color: localStorage.getItem("selectedMenu") === '/zones-list' ? '#4CAF50' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/zones-list' ? '#4CAF50' : '' }} >Packing Zones</div>, to: '/zones-list' },
+    {
+      icon: <HomeWork style={{ color: localStorage.getItem("selectedMenu") === '/warehouse-list' ? '#4CAF50' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/warehouse-list' ? '#4CAF50' : '' }}>Warehouses</div>, to: '/warehouse-list'
+    },
+    { icon: <Cached style={{ color: localStorage.getItem("selectedMenu") === '/rework-list' ? '#4CAF50' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/rework-list' ? '#4CAF50' : '' }} >Reworks</div>, to: '/rework-list' },
+    { icon: <MonetizationOn style={{ color: localStorage.getItem("selectedMenu") === '/sales-list' ? '#4CAF50' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/sales-list' ? '#4CAF50' : '' }}>Sales</div>, to: '/sales-list' },
   ];
 
   const menuItems2 = [
     // add item for styles
-    { icon: <Style style={{ color: localStorage.getItem("selectedMenu") === '/styles-list' ? '#2196F3' : '' }} />, text: 'Styles', to: '/styles-list' },
+    { icon: <Style style={{ color: localStorage.getItem("selectedMenu") === '/styles-list' ? '#2196F3' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/styles-list' ? '#2196F3' : '' }} >Styles</div>, to: '/styles-list' },
     // add item for lots
-    { icon: <ConfirmationNumber style={{ color: localStorage.getItem("selectedMenu") === '/lots-list' ? '#2196F3' : '' }} />, text: 'Lots', to: '/lots-list' },
+    { icon: <ConfirmationNumber style={{ color: localStorage.getItem("selectedMenu") === '/lots-list' ? '#2196F3' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/lots-list' ? '#2196F3' : '' }}>Lots</div>, to: '/lots-list' },
     // add item for regions
-    { icon: <Archive style={{ color: localStorage.getItem("selectedMenu") === '/batch-list' ? '#2196F3' : '' }} />, text: 'Batch', to: '/batch-list' },
+    { icon: <Archive style={{ color: localStorage.getItem("selectedMenu") === '/batch-list' ? '#2196F3' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/batch-list' ? '#2196F3' : '' }}>Batch</div>, to: '/batch-list' },
     // add item for regions
-    { icon: <Map style={{ color: localStorage.getItem("selectedMenu") === '/regions-list' ? '#2196F3' : '' }} />, text: 'Regions', to: '/regions-list' },
+    { icon: <Map style={{ color: localStorage.getItem("selectedMenu") === '/regions-list' ? '#2196F3' : '' }} />, text: <div style={{ color: localStorage.getItem("selectedMenu") === '/regions-list' ? '#2196F3' : '' }} >Regions</div>, to: '/regions-list' },
   ];
 
   const iconStyles = {
