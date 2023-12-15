@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CardContent, Typography, FormControl, Select, MenuItem, InputLabel, ButtonGroup, Button, Grid, Paper, Divider, Tabs, Tab } from '@mui/material';
-import { fetchReport, generateReport, fetchStyleReport, fetchReportByMonthAndYear, fetchStyleReportByMonthAndYear, cleanUpReport } from '../../redux/report/actions/reportActions';
+import { fetchReport, generateReport, updateZoneData, fetchStyleReport, fetchReportByMonthAndYear, fetchStyleReportByMonthAndYear, cleanUpReport } from '../../redux/report/actions/reportActions';
 import { useDispatch, useSelector } from "react-redux";
 import Layout from '../Layout';
 import { BarChart, PieChart } from '@mui/x-charts';
@@ -119,6 +119,7 @@ const Dashboard = () => {
         setLoading(false);
         dispatch(fetchReport());
         dispatch(fetchStyleReport());
+        dispatch(updateZoneData);
     }
 
     return (

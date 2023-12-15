@@ -1,5 +1,6 @@
 import baseAPI2 from '../../baseAPI2';
 import { ActionTypes } from "../type";
+import { toast } from "react-toastify";
 
 export const fetchReport = () => async (dispatch) => {
     try {
@@ -68,6 +69,21 @@ export const fetchReportByMonthAndYear = (month, year) => async (dispatch) => {
             type: ActionTypes.ERROR,
             payload: error,
         });
+    }
+}
+
+export const updateZoneData = () => async (dispatch) => {
+    try {
+        const response = await baseAPI2.get(`/update-zone-data`);
+        if (response.status === 200) {
+            toast.success("Zone data updated successfully");
+        } else {
+            toast.error("Zone data update failed");
+
+        }
+    } catch (error) {
+        toast.error("Zone data update failed");
+
     }
 }
 
