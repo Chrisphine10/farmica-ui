@@ -14,6 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import ReactToPrint from 'react-to-print';
+import { persistor } from '../../redux/store';
 
 const ZoneList = () => {
     const zonesList = useSelector(state => state.zones.zones);
@@ -163,7 +164,10 @@ const ZoneList = () => {
                 <div style={{ marginBottom: 20 }}>
                     <ButtonGroup variant="outlined" aria-label="outlined primary button group">
                         <Button color='success' href="/add-zone">Add Item </Button>
-                        <Button color='error' onClick={reload}>Reload</Button>
+                        <Button color='error' onClick={() => {
+                            reload();
+                            persistor.purge()
+                        }}>Reload</Button>
                     </ButtonGroup>
                 </div>
                 {!loading ? [<div style={{ marginBottom: 1 }}>

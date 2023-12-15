@@ -64,7 +64,7 @@ const ZoneView = () => {
     });
 
     useEffect(() => {
-        warehouseData.uicode = zone.uicode + 'W' + warehouseData.id;
+        warehouseData.uicode = zone.uicode + '-W' + warehouseData.id;
         if (warehouseCreated) {
             // dispatch(cleanUp());
             dispatch(updateWarehouseUicode(warehouseData));
@@ -119,9 +119,9 @@ const ZoneView = () => {
         } else if (warehouse.startCTNNumber < zone.startCTNNumber || warehouse.endCTNNumber > zone.endCTNNumber) {
             toast.error('Start CTN Number and End CTN Number should be in the range of the zone!');
             return false;
-            // } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
-            //     toast.error('Start CTN Number cannot be greater than End CTN Number!');
-            //     return false;
+        } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
+            toast.error('Start CTN Number cannot be greater than End CTN Number!');
+            return false;
         } else {
             return true;
         }
@@ -130,11 +130,11 @@ const ZoneView = () => {
     useEffect(() => {
         console.log(zone);
         if (zone && zone.id) {
-            dispatch(fetchComments(zone.id, 'PACKING'));
+            dispatch(fetchComments(zone.id, '-Z'));
             setLoading(true);
             setWarehouse({
                 ...warehouse,
-                uicode: zone.uicode + 'WAREHOUSE',
+                uicode: zone.uicode + '-W',
                 packingZoneDetail: {
                     id: zone.id,
                 },
