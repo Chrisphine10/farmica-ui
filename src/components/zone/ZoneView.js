@@ -119,9 +119,9 @@ const ZoneView = () => {
         } else if (warehouse.startCTNNumber < zone.startCTNNumber || warehouse.endCTNNumber > zone.endCTNNumber) {
             toast.error('Start CTN Number and End CTN Number should be in the range of the zone!');
             return false;
-        } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
-            toast.error('Start CTN Number cannot be greater than End CTN Number!');
-            return false;
+            // } else if (warehouse.startCTNNumber > warehouse.endCTNNumber) {
+            //     toast.error('Start CTN Number cannot be greater than End CTN Number!');
+            //     return false;
         } else {
             return true;
         }
